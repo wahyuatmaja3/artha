@@ -21,9 +21,9 @@ class DashboardScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.sync),
             onPressed: () async {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Syncing...')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(const SnackBar(content: Text('Syncing...')));
               try {
                 await ref.read(syncServiceProvider).pullAll();
                 if (context.mounted) {
@@ -33,9 +33,9 @@ class DashboardScreen extends ConsumerWidget {
                 }
               } catch (e) {
                 if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Sync gagal: $e')),
-                  );
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('Sync gagal: $e')));
                 }
               }
             },
@@ -68,7 +68,10 @@ class DashboardScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildTotalBalanceCard(BuildContext context, AsyncValue walletsAsyncValue) {
+  Widget _buildTotalBalanceCard(
+    BuildContext context,
+    AsyncValue walletsAsyncValue,
+  ) {
     return Card(
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -88,7 +91,10 @@ class DashboardScreen extends ConsumerWidget {
         ),
         child: walletsAsyncValue.when(
           data: (wallets) {
-            final totalBalance = wallets.fold(0.0, (sum, wallet) => sum + wallet.balance);
+            final totalBalance = wallets.fold(
+              0.0,
+              (sum, wallet) => sum + wallet.balance,
+            );
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -108,14 +114,22 @@ class DashboardScreen extends ConsumerWidget {
               ],
             );
           },
-          loading: () => const Center(child: CircularProgressIndicator(color: Colors.white)),
-          error: (error, _) => Text('Error: $error', style: const TextStyle(color: Colors.white)),
+          loading: () => const Center(
+            child: CircularProgressIndicator(color: Colors.white),
+          ),
+          error: (error, _) => Text(
+            'Error: $error',
+            style: const TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildExpenseChart(BuildContext context, AsyncValue transactionsAsyncValue) {
+  Widget _buildExpenseChart(
+    BuildContext context,
+    AsyncValue transactionsAsyncValue,
+  ) {
     return SizedBox(
       height: 200,
       child: transactionsAsyncValue.when(
@@ -125,63 +139,82 @@ class DashboardScreen extends ConsumerWidget {
           if (transactions.isEmpty) {
             return const Center(child: Text('No transactions yet'));
           }
-          
+
           return PieChart(
-             PieChartData(
-                sectionsSpace: 2,
-                centerSpaceRadius: 40,
-                sections: [
-                   PieChartSectionData(
-                      color: Colors.red,
-                      value: 40,
-                      title: 'Food',
-                      radius: 50,
-                      titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                   ),
-                   PieChartSectionData(
-                      color: Colors.blue,
-                      value: 30,
-                      title: 'Transport',
-                      radius: 50,
-                      titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                   ),
-                   PieChartSectionData(
-                      color: Colors.green,
-                      value: 15,
-                      title: 'Bills',
-                      radius: 50,
-                      titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                   ),
-                   PieChartSectionData(
-                      color: Colors.orange,
-                      value: 15,
-                      title: 'Other',
-                      radius: 50,
-                      titleStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Colors.white),
-                   ),
-                ]
-             )
+            PieChartData(
+              sectionsSpace: 2,
+              centerSpaceRadius: 40,
+              sections: [
+                PieChartSectionData(
+                  color: Colors.red,
+                  value: 40,
+                  title: 'Food',
+                  radius: 50,
+                  titleStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                PieChartSectionData(
+                  color: Colors.blue,
+                  value: 30,
+                  title: 'Transport',
+                  radius: 50,
+                  titleStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                PieChartSectionData(
+                  color: Colors.green,
+                  value: 15,
+                  title: 'Bills',
+                  radius: 50,
+                  titleStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                PieChartSectionData(
+                  color: Colors.orange,
+                  value: 15,
+                  title: 'Other',
+                  radius: 50,
+                  titleStyle: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Text('Error loading chart'),
-      )
+      ),
     );
   }
 
-  Widget _buildRecentTransactions(BuildContext context, AsyncValue transactionsAsyncValue) {
+  Widget _buildRecentTransactions(
+    BuildContext context,
+    AsyncValue transactionsAsyncValue,
+  ) {
     return transactionsAsyncValue.when(
       data: (transactions) {
         if (transactions.isEmpty) {
-             return const Padding(
-               padding: EdgeInsets.all(16.0),
-               child: Center(child: Text('No recent transactions')),
-             );
+          return const Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Center(child: Text('No recent transactions')),
+          );
         }
-        
+
         // Take top 5
         final recent = transactions.take(5).toList();
-        
+
         return ListView.builder(
           shrinkWrap: true,
           physics: const NeverScrollableScrollPhysics(),
@@ -189,11 +222,15 @@ class DashboardScreen extends ConsumerWidget {
           itemBuilder: (context, index) {
             final tx = recent[index];
             // Mocking expense/income for UI demo based on amount sign
-            final isExpense = tx.amount > 0; // Since drift currently doesn't store type locally directly on tx
-            
+            final isExpense =
+                tx.amount >
+                0; // Since drift currently doesn't store type locally directly on tx
+
             return ListTile(
               leading: CircleAvatar(
-                backgroundColor: isExpense ? Colors.red.shade100 : Colors.green.shade100,
+                backgroundColor: isExpense
+                    ? Colors.red.shade100
+                    : Colors.green.shade100,
                 child: Icon(
                   isExpense ? Icons.arrow_downward : Icons.arrow_upward,
                   color: isExpense ? Colors.red : Colors.green,

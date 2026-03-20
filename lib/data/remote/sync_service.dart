@@ -16,79 +16,82 @@ class SyncService {
 
   SyncService(this._db);
 
-  /// Pull all data from Supabase into local SQLite
   Future<void> pullAll() async {
     await pullWallets();
     await pullCategories();
     await pullTransactions();
   }
 
+  // ================= WALLET =================
+
   Future<void> pullWallets() async {
     final rows = await _supabase.from('wallets').select();
-    for (final row in rows) {
-      await _db.walletsDao.insertWallet(WalletsCompanion.insert(
-        id: row['id'] as String,
-        name: row['name'] as String,
-        balance: Value((row['balance'] as num?)?.toDouble() ?? 0.0),
-        userId: Value(row['user_id'] as String?),
-        syncStatus: const Value('synced'),
-      )).catchError((_) async {
-        // Already exists, update instead
-        await ((_db.update(_db.wallets))
-              ..where((t) => t.id.equals(row['id'] as String)))
-            .write(WalletsCompanion(
-          name: Value(row['name'] as String),
-          balance: Value((row['balance'] as num?)?.toDouble() ?? 0.0),
-          syncStatus: const Value('synced'),
-        ));
-      });
-    }
+
+    await _db.batch((batch) {
+      for (final row in rows) {
+        batch.insert(
+          _db.wallets,
+          WalletsCompanion(
+            id: Value(row['id']?.toString() ?? ''),
+            name: Value(row['name']?.toString() ?? ''),
+            balance: Value((row['balance'] as num?)?.toDouble() ?? 0),
+            userId: Value(row['user_id']?.toString()),
+            syncStatus: const Value('synced'),
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
+      }
+    });
   }
+
+  // ================= CATEGORY =================
 
   Future<void> pullCategories() async {
     final rows = await _supabase.from('categories').select();
-    for (final row in rows) {
-      await _db.categoriesDao.insertCategory(CategoriesCompanion.insert(
-        id: row['id'] as String,
-        name: row['name'] as String,
-        type: row['type'] as String,
-        icon: row['icon'] as String? ?? 'category',
-        userId: Value(row['user_id'] as String?),
-        syncStatus: const Value('synced'),
-      )).catchError((_) async {
-        await ((_db.update(_db.categories))
-              ..where((t) => t.id.equals(row['id'] as String)))
-            .write(CategoriesCompanion(
-          name: Value(row['name'] as String),
-          type: Value(row['type'] as String),
-          icon: Value(row['icon'] as String? ?? 'category'),
-          syncStatus: const Value('synced'),
-        ));
-      });
-    }
+
+    await _db.batch((batch) {
+      for (final row in rows) {
+        batch.insert(
+          _db.categories,
+          CategoriesCompanion(
+            id: Value(row['id']?.toString() ?? ''),
+            name: Value(row['name']?.toString() ?? ''),
+            type: Value(row['type']?.toString() ?? ''),
+            icon: Value(row['icon']?.toString() ?? 'category'),
+            userId: Value(row['user_id']?.toString()),
+            syncStatus: const Value('synced'),
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
+      }
+    });
   }
+
+  // ================= TRANSACTION =================
 
   Future<void> pullTransactions() async {
     final rows = await _supabase.from('transactions').select();
-    for (final row in rows) {
-      await _db.transactionsDao.insertTransaction(TransactionsCompanion.insert(
-        id: row['id'] as String,
-        walletId: row['wallet_id'] as String,
-        categoryId: row['category_id'] as String,
-        amount: (row['amount'] as num).toDouble(),
-        transactionDate: DateTime.parse(row['transaction_date'] as String),
-        note: Value(row['note'] as String?),
-        userId: Value(row['user_id'] as String?),
-        syncStatus: const Value('synced'),
-      )).catchError((_) async {
-        await ((_db.update(_db.transactions))
-              ..where((t) => t.id.equals(row['id'] as String)))
-            .write(TransactionsCompanion(
-          amount: Value((row['amount'] as num).toDouble()),
-          note: Value(row['note'] as String?),
-          syncStatus: const Value('synced'),
-        ));
-      });
-    }
+
+    await _db.batch((batch) {
+      for (final row in rows) {
+        batch.insert(
+          _db.transactions,
+          TransactionsCompanion(
+            id: Value(row['id']?.toString() ?? ''),
+            walletId: Value(row['wallet_id']?.toString() ?? ''),
+            categoryId: Value(row['category_id']?.toString() ?? ''),
+            amount: Value((row['amount'] as num?)?.toDouble() ?? 0),
+            transactionDate: Value(
+              DateTime.tryParse(row['transaction_date']?.toString() ?? '') ??
+                  DateTime.now(),
+            ),
+            note: Value(row['note']?.toString()),
+            userId: Value(row['user_id']?.toString()),
+            syncStatus: const Value('synced'),
+          ),
+          mode: InsertMode.insertOrReplace,
+        );
+      }
+    });
   }
 }

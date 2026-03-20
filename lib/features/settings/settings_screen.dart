@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../core/theme/theme_provider.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeMode = ref.watch(themeModeProvider);
+    final isDark = themeMode == ThemeMode.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Settings'),
@@ -34,8 +39,10 @@ class SettingsScreen extends StatelessWidget {
           SwitchListTile(
             secondary: const Icon(Icons.dark_mode),
             title: const Text('Dark Mode'),
-            value: false, // Wire with provider in future
-            onChanged: (val) {},
+            value: isDark,
+            onChanged: (val) {
+              ref.read(themeModeProvider.notifier).toggle(val);
+            },
           ),
           ListTile(
             leading: const Icon(Icons.wallet),

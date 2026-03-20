@@ -1,4 +1,6 @@
+import 'package:artha/core/utils/formatters.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -6,6 +8,7 @@ import '../../data/repositories/transactions_repository.dart';
 import '../../data/repositories/wallets_repository.dart';
 import '../../data/repositories/categories_repository.dart';
 import '../../domain/models/models.dart';
+import 'package:pattern_formatter/pattern_formatter.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
@@ -57,7 +60,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     setState(() => _isSubmitting = true);
 
     try {
-      await ref.read(transactionsRepositoryProvider).addTransaction(
+      await ref
+          .read(transactionsRepositoryProvider)
+          .addTransaction(
             walletId: _selectedWalletId!,
             categoryId: _selectedCategoryId!,
             amount: double.parse(_amountController.text),
@@ -68,9 +73,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Gagal menyimpan: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Gagal menyimpan: $e')));
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
@@ -114,6 +119,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 prefixText: 'Rp ',
                 border: OutlineInputBorder(),
               ),
+              inputFormatters: [ThousandsFormatter()],
               validator: (value) {
                 if (value == null || value.isEmpty) return 'Masukkan jumlah';
                 if (double.tryParse(value) == null) return 'Angka tidak valid';
@@ -132,15 +138,12 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                   border: OutlineInputBorder(),
                 ),
                 items: wallets
-                    .map((w) => DropdownMenuItem(
-                          value: w.id,
-                          child: Text(w.name),
-                        ))
+                    .map(
+                      (w) => DropdownMenuItem(value: w.id, child: Text(w.name)),
+                    )
                     .toList(),
-                onChanged: (value) =>
-                    setState(() => _selectedWalletId = value),
-                validator: (value) =>
-                    value == null ? 'Pilih wallet' : null,
+                onChanged: (value) => setState(() => _selectedWalletId = value),
+                validator: (value) => value == null ? 'Pilih wallet' : null,
               ),
               loading: () => const LinearProgressIndicator(),
               error: (e, _) => Text('Error: $e'),
@@ -150,8 +153,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
             // Category dropdown (filtered by type)
             categoriesAsync.when(
               data: (categories) {
-                final filtered =
-                    categories.where((c) => c.type == _type).toList();
+                final filtered = categories
+                    .where((c) => c.type == _type)
+                    .toList();
                 return DropdownButtonFormField<String>(
                   value: _selectedCategoryId,
                   decoration: const InputDecoration(
@@ -159,15 +163,14 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                     border: OutlineInputBorder(),
                   ),
                   items: filtered
-                      .map((c) => DropdownMenuItem(
-                            value: c.id,
-                            child: Text(c.name),
-                          ))
+                      .map(
+                        (c) =>
+                            DropdownMenuItem(value: c.id, child: Text(c.name)),
+                      )
                       .toList(),
                   onChanged: (value) =>
                       setState(() => _selectedCategoryId = value),
-                  validator: (value) =>
-                      value == null ? 'Pilih kategori' : null,
+                  validator: (value) => value == null ? 'Pilih kategori' : null,
                 );
               },
               loading: () => const LinearProgressIndicator(),

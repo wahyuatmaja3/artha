@@ -25,13 +25,6 @@ class SettingsScreen extends ConsumerWidget {
             trailing: const Icon(Icons.chevron_right),
             onTap: () {},
           ),
-          ListTile(
-            leading: const Icon(Icons.sync),
-            title: const Text('Sync with Supabase'),
-            subtitle: const Text('Synced 5 mins ago'),
-            trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
-          ),
           const Divider(),
           const ListTile(
             title: Text('Preferences', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),

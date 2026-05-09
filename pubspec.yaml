@@ -38,7 +38,6 @@ dependencies:
   riverpod_annotation: any
   drift: any
   sqlite3_flutter_libs: ^0.5.0
-  supabase_flutter: any
   fl_chart: any
   intl: any
   uuid: any

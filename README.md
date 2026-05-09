@@ -26,12 +26,9 @@ Local Database:
 
 * SQLite via Drift ORM
 
-Backend:
+Storage Engine:
 
-* Supabase
-* PostgreSQL Database
-* Supabase Auth (future multi user)
-* Supabase Storage (receipt images)
+* SQLite via Drift ORM
 
 Charts:
 

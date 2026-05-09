@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../data/repositories/wallets_repository.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
-import '../../data/remote/sync_service.dart';
 import 'package:fl_chart/fl_chart.dart';
 
 class DashboardScreen extends ConsumerWidget {
@@ -18,28 +17,6 @@ class DashboardScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Artha Budget'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.sync),
-            onPressed: () async {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text('Syncing...')));
-              try {
-                await ref.read(syncServiceProvider).pullAll();
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Sync berhasil')),
-                  );
-                }
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(
-                    context,
-                  ).showSnackBar(SnackBar(content: Text('Sync gagal: $e')));
-                }
-              }
-            },
-          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -223,8 +200,8 @@ class DashboardScreen extends ConsumerWidget {
             final tx = recent[index];
             // Mocking expense/income for UI demo based on amount sign
             final isExpense =
-                tx.amount >
-                0; // Since drift currently doesn't store type locally directly on tx
+                tx.categoryType ==
+                'expense'; // Since drift currently doesn't store type locally directly on tx
 
             return ListTile(
               leading: CircleAvatar(

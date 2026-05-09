@@ -1,6 +1,4 @@
-import 'package:artha/core/utils/formatters.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
@@ -8,7 +6,6 @@ import '../../data/repositories/transactions_repository.dart';
 import '../../data/repositories/wallets_repository.dart';
 import '../../data/repositories/categories_repository.dart';
 import '../../domain/models/models.dart';
-import 'package:pattern_formatter/pattern_formatter.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
@@ -19,20 +16,16 @@ class AddTransactionScreen extends ConsumerStatefulWidget {
 }
 
 class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
-  final _formKey = GlobalKey<FormState>();
-  final _amountController = TextEditingController();
-  final _noteController = TextEditingController();
-
   String _type = 'expense';
   String? _selectedWalletId;
   String? _selectedCategoryId;
   DateTime _selectedDate = DateTime.now();
+  String _amountStr = '0';
+  String _note = '';
   bool _isSubmitting = false;
 
   @override
   void dispose() {
-    _amountController.dispose();
-    _noteController.dispose();
     super.dispose();
   }
 
@@ -48,8 +41,69 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     }
   }
 
+  void _showNoteDialog() {
+    final noteController = TextEditingController(text: _note);
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Catatan'),
+          content: TextField(
+            controller: noteController,
+            decoration: const InputDecoration(
+              hintText: 'Tambahkan catatan jika perlu',
+            ),
+            autofocus: true,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Batal'),
+            ),
+            FilledButton(
+              onPressed: () {
+                setState(() => _note = noteController.text);
+                Navigator.pop(context);
+              },
+              child: const Text('Simpan'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showWalletPicker(List<WalletModel> wallets) {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return ListView.builder(
+          shrinkWrap: true,
+          itemCount: wallets.length,
+          itemBuilder: (context, index) {
+            final w = wallets[index];
+            return ListTile(
+              leading: const Icon(Icons.account_balance_wallet),
+              title: Text(w.name),
+              subtitle: Text(
+                NumberFormat.currency(
+                  locale: 'id',
+                  symbol: 'Rp ',
+                  decimalDigits: 0,
+                ).format(w.balance),
+              ),
+              onTap: () {
+                setState(() => _selectedWalletId = w.id);
+                Navigator.pop(context);
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
     if (_selectedWalletId == null || _selectedCategoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Pilih wallet dan kategori')),
@@ -57,29 +111,275 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       return;
     }
 
+    final amt = double.tryParse(_amountStr) ?? 0;
+    if (amt <= 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Masukkan jumlah yang valid')),
+      );
+      return;
+    }
+
     setState(() => _isSubmitting = true);
 
     try {
-      await ref
-          .read(transactionsRepositoryProvider)
-          .addTransaction(
+      await ref.read(transactionsRepositoryProvider).addTransaction(
             walletId: _selectedWalletId!,
             categoryId: _selectedCategoryId!,
-            amount: double.parse(_amountController.text),
+            amount: amt,
             type: _type,
             date: _selectedDate,
-            note: _noteController.text,
+            note: _note,
           );
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('Gagal menyimpan: $e')));
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Gagal menyimpan: $e')));
       }
     } finally {
       if (mounted) setState(() => _isSubmitting = false);
     }
+  }
+
+  void _onNumpadTap(String key) {
+    setState(() {
+      if (key == '⌫') {
+        if (_amountStr.length > 1) {
+          _amountStr = _amountStr.substring(0, _amountStr.length - 1);
+        } else {
+          _amountStr = '0';
+        }
+      } else if (key == 'C') {
+        _amountStr = '0';
+      } else if (key == 'OK') {
+        _submit();
+      } else if (key == '000') {
+        if (_amountStr != '0') {
+          _amountStr += '000';
+        }
+      } else {
+        if (_amountStr == '0') {
+          _amountStr = key;
+        } else {
+          _amountStr += key;
+        }
+      }
+    });
+  }
+
+  Widget _buildTopScreen(List<CategoryModel> categories) {
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: SegmentedButton<String>(
+            segments: const [
+              ButtonSegment(value: 'expense', label: Text('Pengeluaran')),
+              ButtonSegment(value: 'income', label: Text('Pemasukan')),
+            ],
+            selected: {_type},
+            onSelectionChanged: (value) {
+              setState(() {
+                _type = value.first;
+                _selectedCategoryId = null;
+              });
+            },
+          ),
+        ),
+        Expanded(
+          child: GridView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 4,
+              mainAxisSpacing: 16,
+              crossAxisSpacing: 16,
+              childAspectRatio: 0.8,
+            ),
+            itemCount: categories.length,
+            itemBuilder: (context, index) {
+              final category = categories[index];
+              final isSelected = category.id == _selectedCategoryId;
+              return GestureDetector(
+                onTap: () => setState(() => _selectedCategoryId = category.id),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    CircleAvatar(
+                      radius: 28,
+                      backgroundColor: isSelected
+                          ? Theme.of(context).colorScheme.primaryContainer
+                          : Theme.of(context).colorScheme.surfaceContainerHighest,
+                      child: Text(
+                        category.icon.isEmpty ? '?' : category.icon,
+                        style: const TextStyle(fontSize: 24),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      category.name,
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight:
+                            isSelected ? FontWeight.bold : FontWeight.normal,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.primary
+                            : null,
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildBottomScreen(List<WalletModel> wallets) {
+    final formattedAmount = NumberFormat.currency(
+      locale: 'id',
+      symbol: 'Rp ',
+      decimalDigits: 0,
+    ).format(double.tryParse(_amountStr) ?? 0);
+
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surface,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.black12,
+            blurRadius: 10,
+            offset: Offset(0, -2),
+          ),
+        ],
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                ActionChip(
+                  avatar: const Icon(Icons.account_balance_wallet, size: 16),
+                  label: Text(
+                    _selectedWalletId != null
+                        ? wallets
+                            .firstWhere(
+                              (w) => w.id == _selectedWalletId,
+                              orElse: () => wallets.first,
+                            )
+                            .name
+                        : 'Pilih Wallet',
+                  ),
+                  onPressed: () => _showWalletPicker(wallets),
+                ),
+                const SizedBox(width: 8),
+                ActionChip(
+                  avatar: const Icon(Icons.calendar_today, size: 16),
+                  label: Text(DateFormat('dd MMM yyyy').format(_selectedDate)),
+                  onPressed: _pickDate,
+                ),
+                const SizedBox(width: 8),
+                ActionChip(
+                  avatar: const Icon(Icons.note, size: 16),
+                  label: Text(_note.isEmpty ? 'Catatan' : '1 Catatan'),
+                  onPressed: _showNoteDialog,
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Container(
+            alignment: Alignment.centerRight,
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+            child: Text(
+              formattedAmount,
+              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          _buildNumpad(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildNumpad() {
+    final keys = [
+      ['1', '2', '3', '⌫'],
+      ['4', '5', '6', 'C'],
+      ['7', '8', '9', '000'],
+      ['', '0', '', 'OK'],
+    ];
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: keys.map((row) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: row.map((key) {
+            return Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(4.0),
+                child: _buildNumpadButton(key),
+              ),
+            );
+          }).toList(),
+        );
+      }).toList(),
+    );
+  }
+
+  Widget _buildNumpadButton(String key) {
+    if (key.isEmpty) return const SizedBox.shrink();
+
+    final isAction = key == '⌫' || key == 'C' || key == 'OK';
+    final isOk = key == 'OK';
+
+    return Material(
+      color: isOk
+          ? Theme.of(context).colorScheme.primary
+          : isAction
+              ? Theme.of(context).colorScheme.surfaceContainerHighest
+              : Colors.transparent,
+      borderRadius: BorderRadius.circular(16),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => _onNumpadTap(key),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 16),
+          alignment: Alignment.center,
+          child: isOk && _isSubmitting
+              ? const SizedBox(
+                  width: 24,
+                  height: 24,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    color: Colors.white,
+                  ),
+                )
+              : Text(
+                  key,
+                  style: TextStyle(
+                    fontSize: isAction ? 20 : 24,
+                    fontWeight: isAction ? FontWeight.bold : FontWeight.normal,
+                    color: isOk
+                        ? Theme.of(context).colorScheme.onPrimary
+                        : Theme.of(context).colorScheme.onSurface,
+                  ),
+                ),
+        ),
+      ),
+    );
   }
 
   @override
@@ -89,126 +389,24 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Tambah Transaksi')),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.all(16),
+      body: SafeArea(
+        child: Column(
           children: [
-            // Type toggle
-            SegmentedButton<String>(
-              segments: const [
-                ButtonSegment(value: 'expense', label: Text('Pengeluaran')),
-                ButtonSegment(value: 'income', label: Text('Pemasukan')),
-              ],
-              selected: {_type},
-              onSelectionChanged: (value) {
-                setState(() {
-                  _type = value.first;
-                  _selectedCategoryId = null;
-                });
-              },
-            ),
-            const SizedBox(height: 16),
-
-            // Amount
-            TextFormField(
-              controller: _amountController,
-              keyboardType: TextInputType.number,
-              decoration: const InputDecoration(
-                labelText: 'Jumlah',
-                prefixText: 'Rp ',
-                border: OutlineInputBorder(),
+            Expanded(
+              child: categoriesAsync.when(
+                data: (categories) {
+                  final filtered =
+                      categories.where((c) => c.type == _type).toList();
+                  return _buildTopScreen(filtered);
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Center(child: Text('Error: $e')),
               ),
-              inputFormatters: [ThousandsFormatter()],
-              validator: (value) {
-                if (value == null || value.isEmpty) return 'Masukkan jumlah';
-                if (double.tryParse(value) == null) return 'Angka tidak valid';
-                if (double.parse(value) <= 0) return 'Harus lebih dari 0';
-                return null;
-              },
             ),
-            const SizedBox(height: 16),
-
-            // Wallet dropdown
             walletsAsync.when(
-              data: (wallets) => DropdownButtonFormField<String>(
-                value: _selectedWalletId,
-                decoration: const InputDecoration(
-                  labelText: 'Wallet',
-                  border: OutlineInputBorder(),
-                ),
-                items: wallets
-                    .map(
-                      (w) => DropdownMenuItem(value: w.id, child: Text(w.name)),
-                    )
-                    .toList(),
-                onChanged: (value) => setState(() => _selectedWalletId = value),
-                validator: (value) => value == null ? 'Pilih wallet' : null,
-              ),
-              loading: () => const LinearProgressIndicator(),
-              error: (e, _) => Text('Error: $e'),
-            ),
-            const SizedBox(height: 16),
-
-            // Category dropdown (filtered by type)
-            categoriesAsync.when(
-              data: (categories) {
-                final filtered = categories
-                    .where((c) => c.type == _type)
-                    .toList();
-                return DropdownButtonFormField<String>(
-                  value: _selectedCategoryId,
-                  decoration: const InputDecoration(
-                    labelText: 'Kategori',
-                    border: OutlineInputBorder(),
-                  ),
-                  items: filtered
-                      .map(
-                        (c) =>
-                            DropdownMenuItem(value: c.id, child: Text(c.name)),
-                      )
-                      .toList(),
-                  onChanged: (value) =>
-                      setState(() => _selectedCategoryId = value),
-                  validator: (value) => value == null ? 'Pilih kategori' : null,
-                );
-              },
-              loading: () => const LinearProgressIndicator(),
-              error: (e, _) => Text('Error: $e'),
-            ),
-            const SizedBox(height: 16),
-
-            // Date picker
-            ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.calendar_today),
-              title: Text(DateFormat('dd MMM yyyy').format(_selectedDate)),
-              subtitle: const Text('Tanggal'),
-              onTap: _pickDate,
-            ),
-            const SizedBox(height: 16),
-
-            // Note
-            TextFormField(
-              controller: _noteController,
-              decoration: const InputDecoration(
-                labelText: 'Catatan (opsional)',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 2,
-            ),
-            const SizedBox(height: 24),
-
-            // Submit button
-            FilledButton(
-              onPressed: _isSubmitting ? null : _submit,
-              child: _isSubmitting
-                  ? const SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Text('Simpan'),
+              data: (wallets) => _buildBottomScreen(wallets),
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (e, _) => Center(child: Text('Error: $e')),
             ),
           ],
         ),

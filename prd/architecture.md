@@ -12,14 +12,12 @@ Layers:
 * Presentation Layer (Flutter UI)
 * State Management Layer
 * Local Data Layer (SQLite / Drift)
-* Remote Data Layer (Supabase)
-* Sync Engine
+* Local Data Layer (SQLite / Drift)
 
 Goal:
 
-* App usable without internet
-* Automatic cloud synchronization
-* Conflict resolution support
+* App usable tanpa internet
+* Semua data tersimpan lokal di perangkat
 
 ---
 
@@ -34,12 +32,9 @@ Local Database:
 
 * SQLite via Drift ORM
 
-Backend:
+Storage Engine:
 
-* Supabase
-* PostgreSQL Database
-* Supabase Auth (future multi user)
-* Supabase Storage (receipt images)
+* SQLite via Drift ORM
 
 Charts:
 
@@ -101,7 +96,7 @@ Transaction Creation:
 * Insert into local DB first
 * Update wallet balance locally
 * Mark sync_status = pending
-* Background sync to Supabase
+* Perubahan langsung tersimpan ke SQLite lokal
 
 Dashboard Calculation:
 
@@ -117,26 +112,19 @@ Budget Tracking:
 
 ---
 
-## 5. Sync Mechanism
+## 5. Local Persistence Mechanism
 
-Sync Triggers:
+Persistence Triggers:
 
-* App launch
-* Pull to refresh
-* Background interval
+* App launch (load local data)
 * After transaction creation
+* After wallet/category/budget updates
 
-Sync Strategy:
+Persistence Strategy:
 
-* Push local pending data
-* Pull latest server data
-* Update local database
-* Handle duplicate via updated_at
-
-Conflict Resolution:
-
-* Latest update wins
-* Soft delete using deleted_at field
+* Semua perubahan ditulis langsung ke SQLite
+* Query dashboard dan laporan membaca dari SQLite
+* Tidak ada push/pull ke server
 
 ---
 
@@ -144,15 +132,14 @@ Conflict Resolution:
 
 * Transaction insert < 100ms
 * Dashboard load < 500ms
-* Sync under 3 seconds for 100 records
+* Query data lokal tetap responsif untuk 100+ records
 
 ---
 
 ## 7. Security Requirements
 
-* Row Level Security in Supabase
-* User can access only own data
-* JWT based authentication (future)
+* Data tersimpan lokal di perangkat pengguna
+* Tidak ada autentikasi server pada versi SQLite-only
 
 ---
 
@@ -160,7 +147,6 @@ Conflict Resolution:
 
 Possible Features:
 
-* Multi device realtime sync
 * Recurring transactions
 * Financial reports PDF export
 * Spending prediction

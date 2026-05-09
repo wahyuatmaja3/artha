@@ -5,7 +5,6 @@ import '../../features/transactions/transactions_screen.dart';
 import '../../features/transactions/add_transaction_screen.dart';
 import '../../features/budget/budget_screen.dart';
 import '../../features/settings/settings_screen.dart';
-import '../../data/remote/sync_service.dart';
 
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
@@ -16,15 +15,6 @@ class AppShell extends ConsumerStatefulWidget {
 
 class _AppShellState extends ConsumerState<AppShell> {
   int _currentIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    // Sync from Supabase on app start
-    Future.microtask(() {
-      ref.read(syncServiceProvider).pullAll();
-    });
-  }
 
   final List<Widget> _screens = [
     const DashboardScreen(),

@@ -12,6 +12,7 @@ final categoriesRepositoryProvider = Provider<CategoriesRepository>((ref) {
 
 final categoriesProvider = StreamProvider<List<CategoryModel>>((ref) {
   final repo = ref.watch(categoriesRepositoryProvider);
+  repo.ensureDefaultCategories();
   return repo.watchCategories();
 });
 
@@ -30,6 +31,43 @@ class CategoriesRepository {
         icon: row.icon,
       )).toList();
     });
+  }
+
+  Future<void> ensureDefaultCategories() async {
+    final existing = await _db.categoriesDao.getAllCategories();
+    if (existing.isNotEmpty) return;
+
+    const dailyExpenseCategories = [
+      ('Makan', '🍽️'),
+      ('Bensin', '⛽'),
+      ('Listrik', '💡'),
+      ('Air', '🚰'),
+      ('Internet', '🌐'),
+      ('Belanja Harian', '🛒'),
+      ('Transportasi', '🚌'),
+      ('Kesehatan', '💊'),
+      ('Pendidikan', '📚'),
+      ('Hiburan', '🎬'),
+      ('Lainnya', '📦'),
+    ];
+
+    const dailyIncomeCategories = [
+      ('Gaji', '💼'),
+      ('Bonus', '🎁'),
+      ('Freelance', '🧑‍💻'),
+      ('Usaha', '🏪'),
+      ('Hadiah', '🎉'),
+      ('Investasi', '📈'),
+      ('Lainnya', '💰'),
+    ];
+
+    for (final item in dailyExpenseCategories) {
+      await addCategory(item.$1, 'expense', item.$2);
+    }
+
+    for (final item in dailyIncomeCategories) {
+      await addCategory(item.$1, 'income', item.$2);
+    }
   }
 
   Future<void> addCategory(String name, String type, String icon) async {

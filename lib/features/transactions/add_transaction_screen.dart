@@ -77,6 +77,41 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
+        if (wallets.isEmpty) {
+          return SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.account_balance_wallet_outlined,
+                    size: 48,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    'Belum ada wallet',
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Tambahkan wallet dulu dari menu Manage Wallets agar bisa dipilih untuk transaksi.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  const SizedBox(height: 16),
+                  FilledButton.icon(
+                    onPressed: () => Navigator.pop(context),
+                    icon: const Icon(Icons.check),
+                    label: const Text('Mengerti'),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
         return ListView.builder(
           shrinkWrap: true,
           itemCount: wallets.length,
@@ -269,7 +304,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 ActionChip(
                   avatar: const Icon(Icons.account_balance_wallet, size: 16),
                   label: Text(
-                    _selectedWalletId != null
+                    wallets.isEmpty
+                        ? 'Belum ada wallet'
+                        : _selectedWalletId != null
                         ? wallets
                             .firstWhere(
                               (w) => w.id == _selectedWalletId,
@@ -278,7 +315,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                             .name
                         : 'Pilih Wallet',
                   ),
-                  onPressed: () => _showWalletPicker(wallets),
+                  onPressed: wallets.isEmpty
+                      ? null
+                      : () => _showWalletPicker(wallets),
                 ),
                 const SizedBox(width: 8),
                 ActionChip(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../core/theme/theme_provider.dart';
+import 'manage_wallets_screen.dart';
+import 'manage_categories_screen.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -41,13 +43,25 @@ class SettingsScreen extends ConsumerWidget {
             leading: const Icon(Icons.wallet),
             title: const Text('Manage Wallets'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const ManageWalletsScreen(),
+                ),
+              );
+            },
           ),
           ListTile(
             leading: const Icon(Icons.category),
             title: const Text('Manage Categories'),
             trailing: const Icon(Icons.chevron_right),
-            onTap: () {},
+            onTap: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const ManageCategoriesScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),

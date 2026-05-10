@@ -112,62 +112,66 @@ class DashboardScreen extends ConsumerWidget {
       height: 200,
       child: transactionsAsyncValue.when(
         data: (transactions) {
-          // In a real app, group by category ID, join with Category name, etc.
-          // For now, doing a simple map for demo purposes.
           if (transactions.isEmpty) {
             return const Center(child: Text('No transactions yet'));
+          }
+
+          final expenseByCategory = <String, double>{};
+          for (final tx in transactions) {
+            if (tx.categoryType != 'expense') continue;
+            final category = (tx.categoryName == null || tx.categoryName!.isEmpty)
+                ? 'Lainnya'
+                : tx.categoryName!;
+            expenseByCategory[category] =
+                (expenseByCategory[category] ?? 0) + tx.amount.abs();
+          }
+
+          if (expenseByCategory.isEmpty) {
+            return const Center(child: Text('Belum ada data pengeluaran'));
+          }
+
+          final sortedEntries = expenseByCategory.entries.toList()
+            ..sort((a, b) => b.value.compareTo(a.value));
+          final topEntries = sortedEntries.take(5).toList();
+          final remainingTotal = sortedEntries
+              .skip(5)
+              .fold<double>(0, (sum, item) => sum + item.value);
+          if (remainingTotal > 0) {
+            topEntries.add(MapEntry('Lainnya', remainingTotal));
+          }
+
+          final colors = [
+            Colors.red,
+            Colors.blue,
+            Colors.green,
+            Colors.orange,
+            Colors.purple,
+            Colors.teal,
+          ];
+
+          final sections = <PieChartSectionData>[];
+          for (var i = 0; i < topEntries.length; i++) {
+            final item = topEntries[i];
+            sections.add(
+              PieChartSectionData(
+                color: colors[i % colors.length],
+                value: item.value,
+                title: item.key,
+                radius: 50,
+                titleStyle: const TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            );
           }
 
           return PieChart(
             PieChartData(
               sectionsSpace: 2,
               centerSpaceRadius: 40,
-              sections: [
-                PieChartSectionData(
-                  color: Colors.red,
-                  value: 40,
-                  title: 'Food',
-                  radius: 50,
-                  titleStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                PieChartSectionData(
-                  color: Colors.blue,
-                  value: 30,
-                  title: 'Transport',
-                  radius: 50,
-                  titleStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                PieChartSectionData(
-                  color: Colors.green,
-                  value: 15,
-                  title: 'Bills',
-                  radius: 50,
-                  titleStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                PieChartSectionData(
-                  color: Colors.orange,
-                  value: 15,
-                  title: 'Other',
-                  radius: 50,
-                  titleStyle: const TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
+              sections: sections,
             ),
           );
         },

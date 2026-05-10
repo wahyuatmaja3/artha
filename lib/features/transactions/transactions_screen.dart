@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
 
@@ -15,7 +16,7 @@ class TransactionsScreen extends ConsumerWidget {
         title: const Text('Transactions'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.filter_list),
+            icon: const FaIcon(FontAwesomeIcons.filter),
             onPressed: () {
               // Show filter options
             },
@@ -41,8 +42,10 @@ class TransactionsScreen extends ConsumerWidget {
               return ListTile(
                 leading: CircleAvatar(
                   backgroundColor: isExpense ? Colors.red.shade100 : Colors.green.shade100,
-                  child: Icon(
-                    isExpense ? Icons.fastfood : Icons.attach_money,
+                  child: FaIcon(
+                    isExpense
+                        ? FontAwesomeIcons.bowlFood
+                        : FontAwesomeIcons.moneyBillWave,
                     color: isExpense ? Colors.red : Colors.green,
                   ),
                 ),

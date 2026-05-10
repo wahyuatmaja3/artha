@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../features/dashboard/dashboard_screen.dart';
 import '../../features/transactions/transactions_screen.dart';
 import '../../features/transactions/add_transaction_screen.dart';
@@ -36,23 +37,23 @@ class _AppShellState extends ConsumerState<AppShell> {
         },
         destinations: const [
           NavigationDestination(
-            icon: Icon(Icons.dashboard_outlined),
-            selectedIcon: Icon(Icons.dashboard),
+            icon: Icon(FontAwesomeIcons.tableColumns),
+            selectedIcon: Icon(FontAwesomeIcons.tableColumns),
             label: 'Home',
           ),
           NavigationDestination(
-            icon: Icon(Icons.receipt_long_outlined),
-            selectedIcon: Icon(Icons.receipt_long),
+            icon: Icon(FontAwesomeIcons.receipt),
+            selectedIcon: Icon(FontAwesomeIcons.receipt),
             label: 'Transactions',
           ),
           NavigationDestination(
-            icon: Icon(Icons.pie_chart_outline),
-            selectedIcon: Icon(Icons.pie_chart),
+            icon: Icon(FontAwesomeIcons.chartPie),
+            selectedIcon: Icon(FontAwesomeIcons.chartPie),
             label: 'Budget',
           ),
           NavigationDestination(
-            icon: Icon(Icons.settings_outlined),
-            selectedIcon: Icon(Icons.settings),
+            icon: Icon(FontAwesomeIcons.gear),
+            selectedIcon: Icon(FontAwesomeIcons.gear),
             label: 'Settings',
           ),
         ],
@@ -65,7 +66,7 @@ class _AppShellState extends ConsumerState<AppShell> {
             ),
           );
         },
-        child: const Icon(Icons.add),
+        child: const FaIcon(FontAwesomeIcons.plus),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );

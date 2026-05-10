@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../data/repositories/wallets_repository.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
@@ -208,8 +209,10 @@ class DashboardScreen extends ConsumerWidget {
                 backgroundColor: isExpense
                     ? Colors.red.shade100
                     : Colors.green.shade100,
-                child: Icon(
-                  isExpense ? Icons.arrow_downward : Icons.arrow_upward,
+                child: FaIcon(
+                  isExpense
+                      ? FontAwesomeIcons.arrowTrendDown
+                      : FontAwesomeIcons.arrowTrendUp,
                   color: isExpense ? Colors.red : Colors.green,
                 ),
               ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../data/repositories/wallets_repository.dart';
 import '../../domain/models/models.dart';
@@ -21,7 +22,7 @@ class ManageWalletsScreen extends ConsumerWidget {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _showAddWalletDialog(context, ref),
-        icon: const Icon(Icons.add),
+        icon: const FaIcon(FontAwesomeIcons.plus),
         label: const Text('Tambah Wallet'),
       ),
     );
@@ -106,11 +107,11 @@ class _WalletsList extends ConsumerWidget {
         final wallet = wallets[index];
 
         return ListTile(
-          leading: const Icon(Icons.account_balance_wallet),
+          leading: const FaIcon(FontAwesomeIcons.wallet),
           title: Text(wallet.name),
           subtitle: Text(currency.format(wallet.balance)),
           trailing: IconButton(
-            icon: const Icon(Icons.delete_outline),
+            icon: const FaIcon(FontAwesomeIcons.trashCan),
             onPressed: () => _confirmDelete(context, ref, wallet),
           ),
         );

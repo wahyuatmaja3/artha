@@ -20,10 +20,11 @@ class ArthaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final themeMode = ref.watch(themeModeProvider);
+    final themePreset = ref.watch(themePresetProvider);
     return MaterialApp(
       title: 'Artha Budget',
-      theme: AppTheme.lightTheme,
-      darkTheme: AppTheme.darkTheme,
+      theme: AppTheme.lightThemeFor(themePreset),
+      darkTheme: AppTheme.darkThemeFor(themePreset),
       themeMode: themeMode,
       home: const AppShell(),
       debugShowCheckedModeBanner: false,

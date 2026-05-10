@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../data/repositories/transactions_repository.dart';
 import '../../data/repositories/wallets_repository.dart';
@@ -84,8 +85,8 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.account_balance_wallet_outlined,
+                  FaIcon(
+                    FontAwesomeIcons.wallet,
                     size: 48,
                     color: Theme.of(context).colorScheme.onSurfaceVariant,
                   ),
@@ -103,7 +104,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                   const SizedBox(height: 16),
                   FilledButton.icon(
                     onPressed: () => Navigator.pop(context),
-                    icon: const Icon(Icons.check),
+                    icon: const FaIcon(FontAwesomeIcons.check),
                     label: const Text('Mengerti'),
                   ),
                 ],
@@ -118,7 +119,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
           itemBuilder: (context, index) {
             final w = wallets[index];
             return ListTile(
-              leading: const Icon(Icons.account_balance_wallet),
+              leading: const FaIcon(FontAwesomeIcons.wallet),
               title: Text(w.name),
               subtitle: Text(
                 NumberFormat.currency(
@@ -302,7 +303,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
             child: Row(
               children: [
                 ActionChip(
-                  avatar: const Icon(Icons.account_balance_wallet, size: 16),
+                  avatar: const FaIcon(FontAwesomeIcons.wallet, size: 14),
                   label: Text(
                     wallets.isEmpty
                         ? 'Belum ada wallet'
@@ -321,13 +322,13 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 ),
                 const SizedBox(width: 8),
                 ActionChip(
-                  avatar: const Icon(Icons.calendar_today, size: 16),
+                  avatar: const FaIcon(FontAwesomeIcons.calendarDay, size: 14),
                   label: Text(DateFormat('dd MMM yyyy').format(_selectedDate)),
                   onPressed: _pickDate,
                 ),
                 const SizedBox(width: 8),
                 ActionChip(
-                  avatar: const Icon(Icons.note, size: 16),
+                  avatar: const FaIcon(FontAwesomeIcons.noteSticky, size: 14),
                   label: Text(_note.isEmpty ? 'Catatan' : '1 Catatan'),
                   onPressed: _showNoteDialog,
                 ),

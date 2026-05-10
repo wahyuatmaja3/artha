@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../data/repositories/budgets_repository.dart';
 import '../../core/utils/formatters.dart';
 
@@ -15,7 +16,7 @@ class BudgetScreen extends ConsumerWidget {
         title: const Text('Budgets'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add),
+            icon: const FaIcon(FontAwesomeIcons.plus),
             onPressed: () {
               // Add new budget limit
             },

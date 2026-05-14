@@ -26,37 +26,58 @@ class _AppShellState extends ConsumerState<AppShell> {
 
   @override
   Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
     return Scaffold(
       body: _screens[_currentIndex],
-      bottomNavigationBar: NavigationBar(
-        selectedIndex: _currentIndex,
-        onDestinationSelected: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        destinations: const [
-          NavigationDestination(
-            icon: Icon(FontAwesomeIcons.tableColumns),
-            selectedIcon: Icon(FontAwesomeIcons.tableColumns),
-            label: 'Home',
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: NavigationBarTheme(
+            data: NavigationBarThemeData(
+              height: 68,
+              indicatorColor: scheme.primary.withValues(alpha: 0.16),
+              labelTextStyle: WidgetStateProperty.resolveWith((states) {
+                final isSelected = states.contains(WidgetState.selected);
+                return TextStyle(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                );
+              }),
+            ),
+            child: NavigationBar(
+              selectedIndex: _currentIndex,
+              onDestinationSelected: (index) {
+                setState(() {
+                  _currentIndex = index;
+                });
+              },
+              destinations: const [
+                NavigationDestination(
+                  icon: Icon(FontAwesomeIcons.tableColumns),
+                  selectedIcon: Icon(FontAwesomeIcons.tableColumns),
+                  label: 'Home',
+                ),
+                NavigationDestination(
+                  icon: Icon(FontAwesomeIcons.receipt),
+                  selectedIcon: Icon(FontAwesomeIcons.receipt),
+                  label: 'Catatan',
+                ),
+                NavigationDestination(
+                  icon: Icon(FontAwesomeIcons.chartPie),
+                  selectedIcon: Icon(FontAwesomeIcons.chartPie),
+                  label: 'Budget',
+                ),
+                NavigationDestination(
+                  icon: Icon(FontAwesomeIcons.gear),
+                  selectedIcon: Icon(FontAwesomeIcons.gear),
+                  label: 'Setelan',
+                ),
+              ],
+            ),
           ),
-          NavigationDestination(
-            icon: Icon(FontAwesomeIcons.receipt),
-            selectedIcon: Icon(FontAwesomeIcons.receipt),
-            label: 'Transactions',
-          ),
-          NavigationDestination(
-            icon: Icon(FontAwesomeIcons.chartPie),
-            selectedIcon: Icon(FontAwesomeIcons.chartPie),
-            label: 'Budget',
-          ),
-          NavigationDestination(
-            icon: Icon(FontAwesomeIcons.gear),
-            selectedIcon: Icon(FontAwesomeIcons.gear),
-            label: 'Settings',
-          ),
-        ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
@@ -66,6 +87,7 @@ class _AppShellState extends ConsumerState<AppShell> {
             ),
           );
         },
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         child: const FaIcon(FontAwesomeIcons.plus),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,

@@ -1,23 +1,122 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../../data/repositories/wallets_repository.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
 import 'package:fl_chart/fl_chart.dart';
 
-class DashboardScreen extends ConsumerWidget {
+class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final walletsAsyncValue = ref.watch(walletsProvider);
+  ConsumerState<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends ConsumerState<DashboardScreen> {
+  DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
+
+  Future<void> _pickMonthYear(BuildContext context) async {
+    final picked = await showDialog<DateTime>(
+      context: context,
+      builder: (dialogContext) {
+        var tempYear = _selectedMonth.year;
+        var tempMonth = _selectedMonth.month;
+        final years = List<int>.generate(81, (index) => 2020 + index);
+        final monthNames = const [
+          'Januari',
+          'Februari',
+          'Maret',
+          'April',
+          'Mei',
+          'Juni',
+          'Juli',
+          'Agustus',
+          'September',
+          'Oktober',
+          'November',
+          'Desember',
+        ];
+
+        return StatefulBuilder(
+          builder: (context, setSheetState) {
+            return AlertDialog(
+              title: const Text('Pilih Bulan'),
+              content: SizedBox(
+                width: 320,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DropdownButtonFormField<int>(
+                      value: tempYear,
+                      decoration: const InputDecoration(labelText: 'Tahun'),
+                      items: years
+                          .map(
+                            (year) => DropdownMenuItem<int>(
+                              value: year,
+                              child: Text(year.toString()),
+                            ),
+                          )
+                          .toList(),
+                      onChanged: (value) {
+                        if (value == null) return;
+                        setSheetState(() => tempYear = value);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: List.generate(12, (index) {
+                        final month = index + 1;
+                        return ChoiceChip(
+                          label: Text(monthNames[index].substring(0, 3)),
+                          selected: tempMonth == month,
+                          onSelected: (_) => setSheetState(() => tempMonth = month),
+                        );
+                      }),
+                    ),
+                  ],
+                ),
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(),
+                  child: const Text('Batal'),
+                ),
+                FilledButton(
+                  onPressed: () => Navigator.of(dialogContext).pop(
+                    DateTime(tempYear, tempMonth),
+                  ),
+                  child: const Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+    if (picked == null) return;
+    setState(() => _selectedMonth = DateTime(picked.year, picked.month));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final transactionsAsyncValue = ref.watch(transactionsProvider);
+    final monthLabel = DateUtilsApp.formatMonth(_selectedMonth);
+
+    final monthStart = DateTime(_selectedMonth.year, _selectedMonth.month, 1);
+    final monthEnd = DateTime(_selectedMonth.year, _selectedMonth.month + 1, 0, 23, 59, 59);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Artha Budget'),
         actions: [
+          TextButton.icon(
+            onPressed: () => _pickMonthYear(context),
+            icon: const Icon(Icons.calendar_month),
+            label: Text(monthLabel),
+          ),
         ],
       ),
       body: SingleChildScrollView(
@@ -25,21 +124,31 @@ class DashboardScreen extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildTotalBalanceCard(context, walletsAsyncValue),
+            _buildTotalBalanceCard(context, transactionsAsyncValue, monthStart, monthEnd),
             const SizedBox(height: 24),
             Text(
               'Expenses by Category',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            _buildExpenseChart(context, transactionsAsyncValue),
+            _buildExpenseChart(
+              context,
+              transactionsAsyncValue,
+              monthStart,
+              monthEnd,
+            ),
             const SizedBox(height: 24),
             Text(
               'Recent Transactions',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             const SizedBox(height: 16),
-            _buildRecentTransactions(context, transactionsAsyncValue),
+            _buildRecentTransactions(
+              context,
+              transactionsAsyncValue,
+              monthStart,
+              monthEnd,
+            ),
           ],
         ),
       ),
@@ -48,7 +157,9 @@ class DashboardScreen extends ConsumerWidget {
 
   Widget _buildTotalBalanceCard(
     BuildContext context,
-    AsyncValue walletsAsyncValue,
+    AsyncValue transactionsAsyncValue,
+    DateTime monthStart,
+    DateTime monthEnd,
   ) {
     return Card(
       elevation: 4,
@@ -67,17 +178,27 @@ class DashboardScreen extends ConsumerWidget {
             end: Alignment.bottomRight,
           ),
         ),
-        child: walletsAsyncValue.when(
-          data: (wallets) {
-            final totalBalance = wallets.fold(
+        child: transactionsAsyncValue.when(
+          data: (transactions) {
+            final monthTransactions = transactions
+                .where(
+                  (tx) =>
+                      !tx.date.isBefore(monthStart) && !tx.date.isAfter(monthEnd),
+                )
+                .toList();
+
+            final totalBalance = monthTransactions.fold(
               0.0,
-              (sum, wallet) => sum + wallet.balance,
+              (sum, tx) {
+                final sign = tx.categoryType == 'expense' ? -1 : 1;
+                return sum + (tx.amount * sign);
+              },
             );
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'Total Balance',
+                Text(
+                  'Saldo ${DateUtilsApp.formatMonth(_selectedMonth)}',
                   style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
                 const SizedBox(height: 8),
@@ -107,17 +228,26 @@ class DashboardScreen extends ConsumerWidget {
   Widget _buildExpenseChart(
     BuildContext context,
     AsyncValue transactionsAsyncValue,
+    DateTime monthStart,
+    DateTime monthEnd,
   ) {
     return SizedBox(
       height: 200,
       child: transactionsAsyncValue.when(
         data: (transactions) {
-          if (transactions.isEmpty) {
+          final monthTransactions = transactions
+              .where(
+                (tx) =>
+                    !tx.date.isBefore(monthStart) && !tx.date.isAfter(monthEnd),
+              )
+              .toList();
+
+          if (monthTransactions.isEmpty) {
             return const Center(child: Text('No transactions yet'));
           }
 
           final expenseByCategory = <String, double>{};
-          for (final tx in transactions) {
+          for (final tx in monthTransactions) {
             if (tx.categoryType != 'expense') continue;
             final category = (tx.categoryName == null || tx.categoryName!.isEmpty)
                 ? 'Lainnya'
@@ -184,18 +314,26 @@ class DashboardScreen extends ConsumerWidget {
   Widget _buildRecentTransactions(
     BuildContext context,
     AsyncValue transactionsAsyncValue,
+    DateTime monthStart,
+    DateTime monthEnd,
   ) {
     return transactionsAsyncValue.when(
       data: (transactions) {
-        if (transactions.isEmpty) {
+        final monthTransactions = transactions
+            .where(
+              (tx) =>
+                  !tx.date.isBefore(monthStart) && !tx.date.isAfter(monthEnd),
+            )
+            .toList();
+
+        if (monthTransactions.isEmpty) {
           return const Padding(
             padding: EdgeInsets.all(16.0),
             child: Center(child: Text('No recent transactions')),
           );
         }
 
-        // Take top 5
-        final recent = transactions.take(5).toList();
+        final recent = monthTransactions.take(5).toList();
 
         return ListView.builder(
           shrinkWrap: true,

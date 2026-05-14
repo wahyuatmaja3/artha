@@ -37,7 +37,13 @@ class TransactionsScreen extends ConsumerWidget {
             separatorBuilder: (context, index) => const Divider(),
             itemBuilder: (context, index) {
               final tx = transactions[index];
-              final isExpense = tx.amount > 0; // Simplified assumption for demo
+              final isExpense = tx.categoryType == 'expense';
+              final title = tx.categoryName?.isNotEmpty == true
+                  ? tx.categoryName!
+                  : 'Uncategorized';
+              final subtitle = tx.note.isNotEmpty
+                  ? '${DateUtilsApp.formatDate(tx.date)} • ${tx.note}'
+                  : DateUtilsApp.formatDate(tx.date);
               
               return ListTile(
                 leading: CircleAvatar(
@@ -49,8 +55,8 @@ class TransactionsScreen extends ConsumerWidget {
                     color: isExpense ? Colors.red : Colors.green,
                   ),
                 ),
-                title: Text(tx.note.isNotEmpty ? tx.note : 'Uncategorized'),
-                subtitle: Text(DateUtilsApp.formatDate(tx.date)),
+                title: Text(title),
+                subtitle: Text(subtitle),
                 trailing: Text(
                   '${isExpense ? '-' : '+'}${CurrencyUtils.formatRupiah(tx.amount)}',
                   style: TextStyle(

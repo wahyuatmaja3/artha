@@ -24,17 +24,34 @@ class TransactionsRepository {
   TransactionsRepository(this._db, this._walletsRepo);
 
   Stream<List<TransactionModel>> watchTransactions() {
-    // Note: A real app would use Drift joins here. 
-    // To keep it simple, we just map the raw rows. Joining is better for UI.
-    return _db.transactionsDao.watchAllTransactions().map((rows) {
-      return rows.map((row) => TransactionModel(
-        id: row.id,
-        walletId: row.walletId,
-        categoryId: row.categoryId,
-        amount: row.amount,
-        note: row.note ?? '',
-        date: row.transactionDate,
-      )).toList();
+    return _db.transactionsDao.watchAllTransactions().asyncMap((rows) async {
+      final categories = await _db.categoriesDao.getAllCategories();
+      final wallets = await _db.walletsDao.getAllWallets();
+
+      final categoriesById = {for (final c in categories) c.id: c};
+      final walletsById = {for (final w in wallets) w.id: w};
+
+      return rows
+          .map(
+            (row) {
+              final category = categoriesById[row.categoryId];
+              final wallet = walletsById[row.walletId];
+
+              return TransactionModel(
+                id: row.id,
+                walletId: row.walletId,
+                categoryId: row.categoryId,
+                amount: row.amount,
+                note: row.note ?? '',
+                date: row.transactionDate,
+                walletName: wallet?.name,
+                categoryName: category?.name,
+                categoryIcon: category?.icon,
+                categoryType: category?.type,
+              );
+            },
+          )
+          .toList();
     });
   }
 

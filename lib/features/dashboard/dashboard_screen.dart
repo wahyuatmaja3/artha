@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -127,18 +126,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
             _buildTotalBalanceCard(context, transactionsAsyncValue, monthStart, monthEnd),
             const SizedBox(height: 24),
             Text(
-              'Expenses by Category',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            _buildExpenseChart(
-              context,
-              transactionsAsyncValue,
-              monthStart,
-              monthEnd,
-            ),
-            const SizedBox(height: 24),
-            Text(
               'Recent Transactions',
               style: Theme.of(context).textTheme.titleLarge,
             ),
@@ -225,92 +212,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildExpenseChart(
-    BuildContext context,
-    AsyncValue transactionsAsyncValue,
-    DateTime monthStart,
-    DateTime monthEnd,
-  ) {
-    return SizedBox(
-      height: 200,
-      child: transactionsAsyncValue.when(
-        data: (transactions) {
-          final monthTransactions = transactions
-              .where(
-                (tx) =>
-                    !tx.date.isBefore(monthStart) && !tx.date.isAfter(monthEnd),
-              )
-              .toList();
-
-          if (monthTransactions.isEmpty) {
-            return const Center(child: Text('No transactions yet'));
-          }
-
-          final expenseByCategory = <String, double>{};
-          for (final tx in monthTransactions) {
-            if (tx.categoryType != 'expense') continue;
-            final category = (tx.categoryName == null || tx.categoryName!.isEmpty)
-                ? 'Lainnya'
-                : tx.categoryName!;
-            expenseByCategory[category] =
-                (expenseByCategory[category] ?? 0) + tx.amount.abs();
-          }
-
-          if (expenseByCategory.isEmpty) {
-            return const Center(child: Text('Belum ada data pengeluaran'));
-          }
-
-          final sortedEntries = expenseByCategory.entries.toList()
-            ..sort((a, b) => b.value.compareTo(a.value));
-          final topEntries = sortedEntries.take(5).toList();
-          final remainingTotal = sortedEntries
-              .skip(5)
-              .fold<double>(0, (sum, item) => sum + item.value);
-          if (remainingTotal > 0) {
-            topEntries.add(MapEntry('Lainnya', remainingTotal));
-          }
-
-          final colors = [
-            Colors.red,
-            Colors.blue,
-            Colors.green,
-            Colors.orange,
-            Colors.purple,
-            Colors.teal,
-          ];
-
-          final sections = <PieChartSectionData>[];
-          for (var i = 0; i < topEntries.length; i++) {
-            final item = topEntries[i];
-            sections.add(
-              PieChartSectionData(
-                color: colors[i % colors.length],
-                value: item.value,
-                title: item.key,
-                radius: 50,
-                titleStyle: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            );
-          }
-
-          return PieChart(
-            PieChartData(
-              sectionsSpace: 2,
-              centerSpaceRadius: 40,
-              sections: sections,
-            ),
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Text('Error loading chart'),
-      ),
-    );
-  }
-
   Widget _buildRecentTransactions(
     BuildContext context,
     AsyncValue transactionsAsyncValue,
@@ -367,6 +268,15 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              onLongPress: () async {
+                await ref
+                    .read(transactionsRepositoryProvider)
+                    .deleteTransaction(tx.id, tx.walletId, tx.amount, tx.categoryType ?? 'expense');
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Transaksi dihapus')),
+                );
+              },
             );
           },
         );

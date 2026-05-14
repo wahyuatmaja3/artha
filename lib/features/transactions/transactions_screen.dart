@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:fl_chart/fl_chart.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
 
@@ -33,10 +34,14 @@ class TransactionsScreen extends ConsumerWidget {
           // Here, we just list them vertically.
           return ListView.separated(
             padding: const EdgeInsets.all(16.0),
-            itemCount: transactions.length,
+            itemCount: transactions.length + 1,
             separatorBuilder: (context, index) => const Divider(),
             itemBuilder: (context, index) {
-              final tx = transactions[index];
+              if (index == 0) {
+                return _buildExpenseChart(transactions);
+              }
+
+              final tx = transactions[index - 1];
               final isExpense = tx.categoryType == 'expense';
               final title = tx.categoryName?.isNotEmpty == true
                   ? tx.categoryName!
@@ -73,6 +78,65 @@ class TransactionsScreen extends ConsumerWidget {
         },
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (error, _) => Center(child: Text('Error: $error')),
+      ),
+    );
+  }
+
+  Widget _buildExpenseChart(List transactions) {
+    final expenseByCategory = <String, double>{};
+    for (final tx in transactions) {
+      if (tx.categoryType != 'expense') continue;
+      final category =
+          (tx.categoryName == null || tx.categoryName!.isEmpty) ? 'Lainnya' : tx.categoryName!;
+      expenseByCategory[category] = (expenseByCategory[category] ?? 0) + tx.amount.abs();
+    }
+
+    if (expenseByCategory.isEmpty) {
+      return const SizedBox(
+        height: 220,
+        child: Center(child: Text('Belum ada data pengeluaran')),
+      );
+    }
+
+    final entries = expenseByCategory.entries.toList()
+      ..sort((a, b) => b.value.compareTo(a.value));
+    final top = entries.take(5).toList();
+
+    final colors = [
+      Colors.red,
+      Colors.blue,
+      Colors.green,
+      Colors.orange,
+      Colors.purple,
+      Colors.teal,
+    ];
+
+    final sections = <PieChartSectionData>[];
+    for (var i = 0; i < top.length; i++) {
+      final item = top[i];
+      sections.add(
+        PieChartSectionData(
+          color: colors[i % colors.length],
+          value: item.value,
+          title: item.key,
+          radius: 52,
+          titleStyle: const TextStyle(
+            fontSize: 11,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      );
+    }
+
+    return SizedBox(
+      height: 220,
+      child: PieChart(
+        PieChartData(
+          sectionsSpace: 2,
+          centerSpaceRadius: 42,
+          sections: sections,
+        ),
       ),
     );
   }

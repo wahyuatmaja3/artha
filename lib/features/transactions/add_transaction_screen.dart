@@ -6,6 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../data/repositories/wallets_repository.dart';
 import '../../data/repositories/categories_repository.dart';
+import '../../data/repositories/budgets_repository.dart';
 import '../../domain/models/models.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
@@ -153,6 +154,46 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         const SnackBar(content: Text('Masukkan jumlah yang valid')),
       );
       return;
+    }
+
+    if (_type == 'expense') {
+      final budgets = await ref.read(budgetsProvider.future);
+      final transactions = await ref.read(transactionsProvider.future);
+      final monthKey =
+          '${_selectedDate.year.toString().padLeft(4, '0')}-${_selectedDate.month.toString().padLeft(2, '0')}';
+
+      BudgetModel? matchingBudget;
+      for (final budget in budgets) {
+        if (budget.categoryId == _selectedCategoryId && budget.month == monthKey) {
+          matchingBudget = budget;
+          break;
+        }
+      }
+
+      if (matchingBudget != null) {
+        final currentUsed = transactions
+            .where(
+              (tx) =>
+                  tx.categoryId == _selectedCategoryId &&
+                  tx.categoryType == 'expense' &&
+                  tx.date.year == _selectedDate.year &&
+                  tx.date.month == _selectedDate.month,
+            )
+            .fold(0.0, (sum, tx) => sum + tx.amount.abs());
+
+        final projectedUsed = currentUsed + amt;
+        if (projectedUsed > matchingBudget.limitAmount) {
+          if (!mounted) return;
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Transaksi ditolak: budget ${matchingBudget.categoryName ?? ''} bulan ini sudah terlewati.',
+              ),
+            ),
+          );
+          return;
+        }
+      }
     }
 
     setState(() => _isSubmitting = true);

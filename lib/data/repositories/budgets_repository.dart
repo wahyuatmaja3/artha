@@ -22,13 +22,42 @@ class BudgetsRepository {
   BudgetsRepository(this._db);
 
   Stream<List<BudgetModel>> watchBudgets() {
-    return _db.budgetsDao.watchAllBudgets().map((rows) {
-      return rows.map((row) => BudgetModel(
-        id: row.id,
-        categoryId: row.categoryId,
-        month: row.month,
-        limitAmount: row.limitAmount,
-      )).toList();
+    return _db.budgetsDao.watchAllBudgets().asyncMap((rows) async {
+      final categories = await _db.categoriesDao.getAllCategories();
+      final transactions = await _db.transactionsDao.getAllTransactions();
+
+      final categoriesById = {for (final c in categories) c.id: c};
+
+      double usedAmountFor(String categoryId, String month) {
+        final parts = month.split('-');
+        if (parts.length != 2) return 0.0;
+
+        final year = int.tryParse(parts[0]);
+        final monthInt = int.tryParse(parts[1]);
+        if (year == null || monthInt == null) return 0.0;
+
+        return transactions
+            .where((tx) {
+              final txDate = tx.transactionDate;
+              return tx.categoryId == categoryId &&
+                  txDate.year == year &&
+                  txDate.month == monthInt;
+            })
+            .fold(0.0, (sum, tx) => sum + tx.amount.abs());
+      }
+
+      return rows.map((row) {
+        final category = categoriesById[row.categoryId];
+        return BudgetModel(
+          id: row.id,
+          categoryId: row.categoryId,
+          month: row.month,
+          limitAmount: row.limitAmount,
+          categoryName: category?.name,
+          categoryIcon: category?.icon,
+          usedAmount: usedAmountFor(row.categoryId, row.month),
+        );
+      }).toList();
     });
   }
 

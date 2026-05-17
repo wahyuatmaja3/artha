@@ -5,6 +5,8 @@ import 'package:uuid/uuid.dart';
 import 'package:drift/drift.dart' as drift;
 import 'wallets_repository.dart'; // for databaseProvider
 
+enum RecurringFrequency { daily, weekly, monthly, yearly }
+
 final transactionsRepositoryProvider = Provider<TransactionsRepository>((ref) {
   final db = ref.watch(databaseProvider);
   final walletsRepo = ref.watch(walletsRepositoryProvider);
@@ -81,6 +83,80 @@ class TransactionsRepository {
     final modifier = type == 'expense' ? -1 : 1;
     final newBalance = wallet.balance + (amount * modifier);
     await _walletsRepo.updateBalance(walletId, newBalance);
+  }
+
+  Future<void> addRecurringRule({
+    required String walletId,
+    required String categoryId,
+    required double amount,
+    required String type,
+    required DateTime startDate,
+    DateTime? endDate,
+    required RecurringFrequency frequency,
+    String note = '',
+    bool reminderEnabled = false,
+    bool autoCreateEnabled = true,
+  }) async {
+    final now = DateTime.now().toUtc();
+    final startUtc = DateTime.utc(startDate.year, startDate.month, startDate.day);
+    final endUtc = endDate == null ? null : DateTime.utc(endDate.year, endDate.month, endDate.day);
+    final nextRunAt = _calculateNextRunAt(
+      frequency: frequency,
+      startDate: startUtc,
+      reference: now,
+    );
+
+    await _db.customStatement(
+      '''
+      INSERT INTO recurring_rules (
+        id, wallet_id, category_id, amount, type, note, frequency,
+        start_date, end_date, reminder_enabled, auto_create_enabled,
+        is_active, next_run_at, created_at, updated_at
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ''',
+      [
+        _uuid.v4(),
+        walletId,
+        categoryId,
+        amount,
+        type,
+        note,
+        frequency.name,
+        startUtc.toIso8601String(),
+        endUtc?.toIso8601String(),
+        reminderEnabled ? 1 : 0,
+        autoCreateEnabled ? 1 : 0,
+        1,
+        nextRunAt.toIso8601String(),
+        now.toIso8601String(),
+        now.toIso8601String(),
+      ],
+    );
+  }
+
+  DateTime _calculateNextRunAt({
+    required RecurringFrequency frequency,
+    required DateTime startDate,
+    required DateTime reference,
+  }) {
+    var next = startDate;
+    while (!next.isAfter(reference)) {
+      switch (frequency) {
+        case RecurringFrequency.daily:
+          next = next.add(const Duration(days: 1));
+          break;
+        case RecurringFrequency.weekly:
+          next = next.add(const Duration(days: 7));
+          break;
+        case RecurringFrequency.monthly:
+          next = DateTime.utc(next.year, next.month + 1, next.day);
+          break;
+        case RecurringFrequency.yearly:
+          next = DateTime.utc(next.year + 1, next.month, next.day);
+          break;
+      }
+    }
+    return next;
   }
 
   Future<void> deleteTransaction(String id, String walletId, double amount, String type) async {

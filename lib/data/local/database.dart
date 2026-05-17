@@ -26,15 +26,54 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
     onCreate: (Migrator m) async {
       await m.createAll();
+      await customStatement('''
+        CREATE TABLE IF NOT EXISTS recurring_rules (
+          id TEXT PRIMARY KEY,
+          wallet_id TEXT NOT NULL,
+          category_id TEXT NOT NULL,
+          amount REAL NOT NULL,
+          type TEXT NOT NULL,
+          note TEXT,
+          frequency TEXT NOT NULL,
+          start_date TEXT NOT NULL,
+          end_date TEXT,
+          reminder_enabled INTEGER NOT NULL DEFAULT 0,
+          auto_create_enabled INTEGER NOT NULL DEFAULT 1,
+          is_active INTEGER NOT NULL DEFAULT 1,
+          next_run_at TEXT NOT NULL,
+          created_at TEXT NOT NULL,
+          updated_at TEXT NOT NULL
+        )
+      ''');
     },
     onUpgrade: (Migrator m, int from, int to) async {
-      // Add migration logic later if needed
+      if (from < 2) {
+        await customStatement('''
+          CREATE TABLE IF NOT EXISTS recurring_rules (
+            id TEXT PRIMARY KEY,
+            wallet_id TEXT NOT NULL,
+            category_id TEXT NOT NULL,
+            amount REAL NOT NULL,
+            type TEXT NOT NULL,
+            note TEXT,
+            frequency TEXT NOT NULL,
+            start_date TEXT NOT NULL,
+            end_date TEXT,
+            reminder_enabled INTEGER NOT NULL DEFAULT 0,
+            auto_create_enabled INTEGER NOT NULL DEFAULT 1,
+            is_active INTEGER NOT NULL DEFAULT 1,
+            next_run_at TEXT NOT NULL,
+            created_at TEXT NOT NULL,
+            updated_at TEXT NOT NULL
+          )
+        ''');
+      }
     },
   );
 }

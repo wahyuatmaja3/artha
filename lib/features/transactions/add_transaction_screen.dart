@@ -25,9 +25,20 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   String _amountStr = '0';
   String _note = '';
   bool _isSubmitting = false;
+  bool _isRecurring = false;
+  RecurringFrequency _recurringFrequency = RecurringFrequency.monthly;
+  bool _recurringReminder = false;
+  late final TextEditingController _noteController;
+
+  @override
+  void initState() {
+    super.initState();
+    _noteController = TextEditingController(text: _note);
+  }
 
   @override
   void dispose() {
+    _noteController.dispose();
     super.dispose();
   }
 
@@ -41,38 +52,6 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     if (picked != null) {
       setState(() => _selectedDate = picked);
     }
-  }
-
-  void _showNoteDialog() {
-    final noteController = TextEditingController(text: _note);
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Catatan'),
-          content: TextField(
-            controller: noteController,
-            decoration: const InputDecoration(
-              hintText: 'Tambahkan catatan jika perlu',
-            ),
-            autofocus: true,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
-            ),
-            FilledButton(
-              onPressed: () {
-                setState(() => _note = noteController.text);
-                Navigator.pop(context);
-              },
-              child: const Text('Simpan'),
-            ),
-          ],
-        );
-      },
-    );
   }
 
   void _showWalletPicker(List<WalletModel> wallets) {
@@ -199,14 +178,28 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
     setState(() => _isSubmitting = true);
 
     try {
-      await ref.read(transactionsRepositoryProvider).addTransaction(
-            walletId: _selectedWalletId!,
-            categoryId: _selectedCategoryId!,
-            amount: amt,
-            type: _type,
-            date: _selectedDate,
-            note: _note,
-          );
+      if (_isRecurring) {
+        await ref.read(transactionsRepositoryProvider).addRecurringRule(
+              walletId: _selectedWalletId!,
+              categoryId: _selectedCategoryId!,
+              amount: amt,
+              type: _type,
+              startDate: _selectedDate,
+              frequency: _recurringFrequency,
+              note: _note,
+              reminderEnabled: _recurringReminder,
+              autoCreateEnabled: true,
+            );
+      } else {
+        await ref.read(transactionsRepositoryProvider).addTransaction(
+              walletId: _selectedWalletId!,
+              categoryId: _selectedCategoryId!,
+              amount: amt,
+              type: _type,
+              date: _selectedDate,
+              note: _note,
+            );
+      }
       if (mounted) Navigator.of(context).pop();
     } catch (e) {
       if (mounted) {
@@ -339,43 +332,124 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                ActionChip(
-                  avatar: const FaIcon(FontAwesomeIcons.wallet, size: 14),
-                  label: Text(
-                    wallets.isEmpty
-                        ? 'Belum ada wallet'
-                        : _selectedWalletId != null
-                        ? wallets
-                            .firstWhere(
-                              (w) => w.id == _selectedWalletId,
-                              orElse: () => wallets.first,
-                            )
-                            .name
-                        : 'Pilih Wallet',
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              ActionChip(
+                avatar: const FaIcon(FontAwesomeIcons.wallet, size: 14),
+                label: Text(
+                  wallets.isEmpty
+                      ? 'Belum ada wallet'
+                      : _selectedWalletId != null
+                          ? wallets
+                              .firstWhere(
+                                (w) => w.id == _selectedWalletId,
+                                orElse: () => wallets.first,
+                              )
+                              .name
+                          : 'Wallet',
+                ),
+                onPressed: wallets.isEmpty ? null : () => _showWalletPicker(wallets),
+              ),
+              InkWell(
+                borderRadius: BorderRadius.circular(12),
+                onTap: _pickDate,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                    borderRadius: BorderRadius.circular(12),
                   ),
-                  onPressed: wallets.isEmpty
-                      ? null
-                      : () => _showWalletPicker(wallets),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const FaIcon(FontAwesomeIcons.calendarDay, size: 14),
+                      const SizedBox(width: 8),
+                      Text(DateFormat('dd MMM yyyy').format(_selectedDate)),
+                    ],
+                  ),
                 ),
-                const SizedBox(width: 8),
-                ActionChip(
-                  avatar: const FaIcon(FontAwesomeIcons.calendarDay, size: 14),
-                  label: Text(DateFormat('dd MMM yyyy').format(_selectedDate)),
-                  onPressed: _pickDate,
-                ),
-                const SizedBox(width: 8),
-                ActionChip(
-                  avatar: const FaIcon(FontAwesomeIcons.noteSticky, size: 14),
-                  label: Text(_note.isEmpty ? 'Catatan' : '1 Catatan'),
-                  onPressed: _showNoteDialog,
-                ),
-              ],
+              ),
+              FilterChip(
+                label: const Text('Recurring'),
+                selected: _isRecurring,
+                onSelected: (v) => setState(() => _isRecurring = v),
+              ),
+            ],
+          ),
+          const SizedBox(height: 10),
+          TextField(
+            controller: _noteController,
+            onChanged: (value) => _note = value,
+            minLines: 1,
+            maxLines: 1,
+            decoration: InputDecoration(
+              hintText: 'Catatan (opsional)',
+              isDense: true,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             ),
           ),
+          if (_isRecurring) ...[
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Frekuensi Recurring',
+                    style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(height: 10),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      ChoiceChip(
+                        label: const Text('Harian'),
+                        selected: _recurringFrequency == RecurringFrequency.daily,
+                        onSelected: (_) => setState(() => _recurringFrequency = RecurringFrequency.daily),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Mingguan'),
+                        selected: _recurringFrequency == RecurringFrequency.weekly,
+                        onSelected: (_) => setState(() => _recurringFrequency = RecurringFrequency.weekly),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Bulanan'),
+                        selected: _recurringFrequency == RecurringFrequency.monthly,
+                        onSelected: (_) => setState(() => _recurringFrequency = RecurringFrequency.monthly),
+                      ),
+                      ChoiceChip(
+                        label: const Text('Tahunan'),
+                        selected: _recurringFrequency == RecurringFrequency.yearly,
+                        onSelected: (_) => setState(() => _recurringFrequency = RecurringFrequency.yearly),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                  SwitchListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('Reminder'),
+                    value: _recurringReminder,
+                    onChanged: (v) => setState(() => _recurringReminder = v),
+                  ),
+                ],
+              ),
+            ),
+          ],
           const SizedBox(height: 16),
           Container(
             alignment: Alignment.centerRight,
@@ -437,12 +511,12 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
         borderRadius: BorderRadius.circular(16),
         onTap: () => _onNumpadTap(key),
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           alignment: Alignment.center,
           child: isOk && _isSubmitting
               ? const SizedBox(
-                  width: 24,
-                  height: 24,
+                  width: 18,
+                  height: 18,
                   child: CircularProgressIndicator(
                     strokeWidth: 2,
                     color: Colors.white,
@@ -451,7 +525,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
               : Text(
                   key,
                   style: TextStyle(
-                    fontSize: isAction ? 20 : 24,
+                    fontSize: isAction ? 17 : 20,
                     fontWeight: isAction ? FontWeight.bold : FontWeight.normal,
                     color: isOk
                         ? Theme.of(context).colorScheme.onPrimary
@@ -484,11 +558,12 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 error: (e, _) => Center(child: Text('Error: $e')),
               ),
             ),
-            walletsAsync.when(
-              data: (wallets) => _buildBottomScreen(wallets),
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (e, _) => Center(child: Text('Error: $e')),
-            ),
+            if (_selectedCategoryId != null)
+              walletsAsync.when(
+                data: (wallets) => _buildBottomScreen(wallets),
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Center(child: Text('Error: $e')),
+              ),
           ],
         ),
       ),

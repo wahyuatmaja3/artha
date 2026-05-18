@@ -23,7 +23,7 @@ class SavingsGoalsScreen extends ConsumerWidget {
             onPressed: walletsAsync.maybeWhen(
               data: (wallets) => wallets.isEmpty
                   ? null
-                  : () => _showAddGoalDialog(context, ref, wallets),
+                  : () => _showAddGoalSheet(context, ref, wallets),
               orElse: () => null,
             ),
             icon: const FaIcon(FontAwesomeIcons.plus),
@@ -53,21 +53,27 @@ class SavingsGoalsScreen extends ConsumerWidget {
     );
   }
 
-  Future<void> _showAddGoalDialog(BuildContext context, WidgetRef ref, List<WalletModel> wallets) async {
+  Future<void> _showAddGoalSheet(BuildContext context, WidgetRef ref, List<WalletModel> wallets) async {
     final nameController = TextEditingController();
     final targetController = TextEditingController();
     String selectedWalletId = wallets.first.id;
     DateTime? selectedDate;
 
-    await showDialog<void>(
+    await showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
       builder: (dialogContext) => StatefulBuilder(
-        builder: (context, setStateDialog) => AlertDialog(
-          title: const Text('Tambah Goal'),
-          content: SingleChildScrollView(
+        builder: (context, setStateDialog) => Padding(
+          padding: EdgeInsets.fromLTRB(16, 8, 16, MediaQuery.of(context).viewInsets.bottom + 16),
+          child: SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Text('Tambah Goal', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 16),
                 TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Nama target', hintText: 'contoh: Dana Darurat')),
                 const SizedBox(height: 12),
                 TextField(
@@ -86,6 +92,7 @@ class SavingsGoalsScreen extends ConsumerWidget {
                     if (value != null) setStateDialog(() => selectedWalletId = value);
                   },
                 ),
+                const SizedBox(height: 16),
                 ListTile(
                   contentPadding: EdgeInsets.zero,
                   title: const Text('Target date'),
@@ -101,13 +108,19 @@ class SavingsGoalsScreen extends ConsumerWidget {
                     if (picked != null) setStateDialog(() => selectedDate = picked);
                   },
                 ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text('Batal')),
-            FilledButton(
-              onPressed: () async {
+                const SizedBox(height: 16),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.of(dialogContext).pop(),
+                        child: const Text('Batal'),
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: () async {
                 final name = nameController.text.trim();
                 final target = double.tryParse(targetController.text.trim());
                 if (name.isEmpty || target == null || target <= 0) return;
@@ -122,10 +135,15 @@ class SavingsGoalsScreen extends ConsumerWidget {
                     );
                 if (!context.mounted) return;
                 Navigator.of(dialogContext).pop();
-              },
-              child: const Text('Simpan'),
+                        },
+                        child: const Text('Simpan'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

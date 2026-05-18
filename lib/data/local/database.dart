@@ -11,24 +11,26 @@ import 'tables/categories.dart';
 import 'tables/transactions.dart';
 import 'tables/budgets.dart';
 import 'tables/savings_goals.dart';
+import 'tables/investment_plans.dart';
 
 import 'daos/wallets_dao.dart';
 import 'daos/categories_dao.dart';
 import 'daos/transactions_dao.dart';
 import 'daos/budgets_dao.dart';
 import 'daos/savings_goals_dao.dart';
+import 'daos/investment_plans_dao.dart';
 
 part 'database.g.dart';
 
 @DriftDatabase(
-  tables: [Wallets, Categories, Transactions, Budgets, SavingsGoals],
-  daos: [WalletsDao, CategoriesDao, TransactionsDao, BudgetsDao, SavingsGoalsDao],
+  tables: [Wallets, Categories, Transactions, Budgets, SavingsGoals, InvestmentPlans],
+  daos: [WalletsDao, CategoriesDao, TransactionsDao, BudgetsDao, SavingsGoalsDao, InvestmentPlansDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 3;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -78,6 +80,13 @@ class AppDatabase extends _$AppDatabase {
       }
       if (from < 3) {
         await m.createTable(savingsGoals);
+      }
+      if (from < 4) {
+        await m.createTable(investmentPlans);
+      }
+      if (from < 5) {
+        await customStatement('ALTER TABLE investment_plans ADD COLUMN auto_invest_enabled INTEGER NOT NULL DEFAULT 0');
+        await customStatement('ALTER TABLE investment_plans ADD COLUMN next_auto_invest_at TEXT');
       }
     },
   );

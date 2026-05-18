@@ -7,6 +7,7 @@ import '../../features/transactions/add_transaction_screen.dart';
 import '../../features/budget/budget_screen.dart';
 import '../../features/settings/settings_screen.dart';
 import '../../features/savings_goals/savings_goals_screen.dart';
+import '../../features/investment_plans/investment_plans_screen.dart';
 
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
@@ -22,6 +23,7 @@ class _AppShellState extends ConsumerState<AppShell> {
     const DashboardScreen(),
     const TransactionsScreen(),
     const SavingsGoalsScreen(),
+    const InvestmentPlansScreen(),
     const BudgetScreen(),
     const SettingsScreen(),
   ];
@@ -71,6 +73,11 @@ class _AppShellState extends ConsumerState<AppShell> {
                   icon: Icon(FontAwesomeIcons.bullseye),
                   selectedIcon: Icon(FontAwesomeIcons.bullseye),
                   label: 'Goals',
+                ),
+                NavigationDestination(
+                  icon: Icon(FontAwesomeIcons.chartLine),
+                  selectedIcon: Icon(FontAwesomeIcons.chartLine),
+                  label: 'Invest',
                 ),
                 NavigationDestination(
                   icon: Icon(FontAwesomeIcons.chartPie),

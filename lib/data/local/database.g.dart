@@ -3134,6 +3134,1029 @@ class SavingsGoalsCompanion extends UpdateCompanion<SavingsGoal> {
   }
 }
 
+class $InvestmentPlansTable extends InvestmentPlans
+    with TableInfo<$InvestmentPlansTable, InvestmentPlan> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $InvestmentPlansTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _walletIdMeta = const VerificationMeta(
+    'walletId',
+  );
+  @override
+  late final GeneratedColumn<String> walletId = GeneratedColumn<String>(
+    'wallet_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES wallets (id)',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _investmentTypeMeta = const VerificationMeta(
+    'investmentType',
+  );
+  @override
+  late final GeneratedColumn<String> investmentType = GeneratedColumn<String>(
+    'investment_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetAmountMeta = const VerificationMeta(
+    'targetAmount',
+  );
+  @override
+  late final GeneratedColumn<double> targetAmount = GeneratedColumn<double>(
+    'target_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _periodicAllocationMeta =
+      const VerificationMeta('periodicAllocation');
+  @override
+  late final GeneratedColumn<double> periodicAllocation =
+      GeneratedColumn<double>(
+        'periodic_allocation',
+        aliasedName,
+        false,
+        type: DriftSqlType.double,
+        requiredDuringInsert: true,
+      );
+  static const VerificationMeta _frequencyMeta = const VerificationMeta(
+    'frequency',
+  );
+  @override
+  late final GeneratedColumn<String> frequency = GeneratedColumn<String>(
+    'frequency',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _startDateMeta = const VerificationMeta(
+    'startDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startDate = GeneratedColumn<DateTime>(
+    'start_date',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _noteMeta = const VerificationMeta('note');
+  @override
+  late final GeneratedColumn<String> note = GeneratedColumn<String>(
+    'note',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _currentAmountMeta = const VerificationMeta(
+    'currentAmount',
+  );
+  @override
+  late final GeneratedColumn<double> currentAmount = GeneratedColumn<double>(
+    'current_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _isPausedMeta = const VerificationMeta(
+    'isPaused',
+  );
+  @override
+  late final GeneratedColumn<bool> isPaused = GeneratedColumn<bool>(
+    'is_paused',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_paused" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _autoInvestEnabledMeta = const VerificationMeta(
+    'autoInvestEnabled',
+  );
+  @override
+  late final GeneratedColumn<bool> autoInvestEnabled = GeneratedColumn<bool>(
+    'auto_invest_enabled',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("auto_invest_enabled" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _nextAutoInvestAtMeta = const VerificationMeta(
+    'nextAutoInvestAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> nextAutoInvestAt =
+      GeneratedColumn<DateTime>(
+        'next_auto_invest_at',
+        aliasedName,
+        true,
+        type: DriftSqlType.dateTime,
+        requiredDuringInsert: false,
+      );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncStatusMeta = const VerificationMeta(
+    'syncStatus',
+  );
+  @override
+  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
+    'sync_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    userId,
+    walletId,
+    name,
+    investmentType,
+    targetAmount,
+    periodicAllocation,
+    frequency,
+    startDate,
+    note,
+    currentAmount,
+    isPaused,
+    autoInvestEnabled,
+    nextAutoInvestAt,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'investment_plans';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<InvestmentPlan> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    }
+    if (data.containsKey('wallet_id')) {
+      context.handle(
+        _walletIdMeta,
+        walletId.isAcceptableOrUnknown(data['wallet_id']!, _walletIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_walletIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('investment_type')) {
+      context.handle(
+        _investmentTypeMeta,
+        investmentType.isAcceptableOrUnknown(
+          data['investment_type']!,
+          _investmentTypeMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_investmentTypeMeta);
+    }
+    if (data.containsKey('target_amount')) {
+      context.handle(
+        _targetAmountMeta,
+        targetAmount.isAcceptableOrUnknown(
+          data['target_amount']!,
+          _targetAmountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetAmountMeta);
+    }
+    if (data.containsKey('periodic_allocation')) {
+      context.handle(
+        _periodicAllocationMeta,
+        periodicAllocation.isAcceptableOrUnknown(
+          data['periodic_allocation']!,
+          _periodicAllocationMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_periodicAllocationMeta);
+    }
+    if (data.containsKey('frequency')) {
+      context.handle(
+        _frequencyMeta,
+        frequency.isAcceptableOrUnknown(data['frequency']!, _frequencyMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_frequencyMeta);
+    }
+    if (data.containsKey('start_date')) {
+      context.handle(
+        _startDateMeta,
+        startDate.isAcceptableOrUnknown(data['start_date']!, _startDateMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startDateMeta);
+    }
+    if (data.containsKey('note')) {
+      context.handle(
+        _noteMeta,
+        note.isAcceptableOrUnknown(data['note']!, _noteMeta),
+      );
+    }
+    if (data.containsKey('current_amount')) {
+      context.handle(
+        _currentAmountMeta,
+        currentAmount.isAcceptableOrUnknown(
+          data['current_amount']!,
+          _currentAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('is_paused')) {
+      context.handle(
+        _isPausedMeta,
+        isPaused.isAcceptableOrUnknown(data['is_paused']!, _isPausedMeta),
+      );
+    }
+    if (data.containsKey('auto_invest_enabled')) {
+      context.handle(
+        _autoInvestEnabledMeta,
+        autoInvestEnabled.isAcceptableOrUnknown(
+          data['auto_invest_enabled']!,
+          _autoInvestEnabledMeta,
+        ),
+      );
+    }
+    if (data.containsKey('next_auto_invest_at')) {
+      context.handle(
+        _nextAutoInvestAtMeta,
+        nextAutoInvestAt.isAcceptableOrUnknown(
+          data['next_auto_invest_at']!,
+          _nextAutoInvestAtMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_status')) {
+      context.handle(
+        _syncStatusMeta,
+        syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  InvestmentPlan map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return InvestmentPlan(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      ),
+      walletId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}wallet_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      investmentType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}investment_type'],
+      )!,
+      targetAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}target_amount'],
+      )!,
+      periodicAllocation: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}periodic_allocation'],
+      )!,
+      frequency: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}frequency'],
+      )!,
+      startDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}start_date'],
+      )!,
+      note: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}note'],
+      )!,
+      currentAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}current_amount'],
+      )!,
+      isPaused: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_paused'],
+      )!,
+      autoInvestEnabled: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}auto_invest_enabled'],
+      )!,
+      nextAutoInvestAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}next_auto_invest_at'],
+      ),
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_status'],
+      )!,
+    );
+  }
+
+  @override
+  $InvestmentPlansTable createAlias(String alias) {
+    return $InvestmentPlansTable(attachedDatabase, alias);
+  }
+}
+
+class InvestmentPlan extends DataClass implements Insertable<InvestmentPlan> {
+  final String id;
+  final String? userId;
+  final String walletId;
+  final String name;
+  final String investmentType;
+  final double targetAmount;
+  final double periodicAllocation;
+  final String frequency;
+  final DateTime startDate;
+  final String note;
+  final double currentAmount;
+  final bool isPaused;
+  final bool autoInvestEnabled;
+  final DateTime? nextAutoInvestAt;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final String syncStatus;
+  const InvestmentPlan({
+    required this.id,
+    this.userId,
+    required this.walletId,
+    required this.name,
+    required this.investmentType,
+    required this.targetAmount,
+    required this.periodicAllocation,
+    required this.frequency,
+    required this.startDate,
+    required this.note,
+    required this.currentAmount,
+    required this.isPaused,
+    required this.autoInvestEnabled,
+    this.nextAutoInvestAt,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.syncStatus,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<String>(userId);
+    }
+    map['wallet_id'] = Variable<String>(walletId);
+    map['name'] = Variable<String>(name);
+    map['investment_type'] = Variable<String>(investmentType);
+    map['target_amount'] = Variable<double>(targetAmount);
+    map['periodic_allocation'] = Variable<double>(periodicAllocation);
+    map['frequency'] = Variable<String>(frequency);
+    map['start_date'] = Variable<DateTime>(startDate);
+    map['note'] = Variable<String>(note);
+    map['current_amount'] = Variable<double>(currentAmount);
+    map['is_paused'] = Variable<bool>(isPaused);
+    map['auto_invest_enabled'] = Variable<bool>(autoInvestEnabled);
+    if (!nullToAbsent || nextAutoInvestAt != null) {
+      map['next_auto_invest_at'] = Variable<DateTime>(nextAutoInvestAt);
+    }
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['sync_status'] = Variable<String>(syncStatus);
+    return map;
+  }
+
+  InvestmentPlansCompanion toCompanion(bool nullToAbsent) {
+    return InvestmentPlansCompanion(
+      id: Value(id),
+      userId: userId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(userId),
+      walletId: Value(walletId),
+      name: Value(name),
+      investmentType: Value(investmentType),
+      targetAmount: Value(targetAmount),
+      periodicAllocation: Value(periodicAllocation),
+      frequency: Value(frequency),
+      startDate: Value(startDate),
+      note: Value(note),
+      currentAmount: Value(currentAmount),
+      isPaused: Value(isPaused),
+      autoInvestEnabled: Value(autoInvestEnabled),
+      nextAutoInvestAt: nextAutoInvestAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(nextAutoInvestAt),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory InvestmentPlan.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return InvestmentPlan(
+      id: serializer.fromJson<String>(json['id']),
+      userId: serializer.fromJson<String?>(json['userId']),
+      walletId: serializer.fromJson<String>(json['walletId']),
+      name: serializer.fromJson<String>(json['name']),
+      investmentType: serializer.fromJson<String>(json['investmentType']),
+      targetAmount: serializer.fromJson<double>(json['targetAmount']),
+      periodicAllocation: serializer.fromJson<double>(
+        json['periodicAllocation'],
+      ),
+      frequency: serializer.fromJson<String>(json['frequency']),
+      startDate: serializer.fromJson<DateTime>(json['startDate']),
+      note: serializer.fromJson<String>(json['note']),
+      currentAmount: serializer.fromJson<double>(json['currentAmount']),
+      isPaused: serializer.fromJson<bool>(json['isPaused']),
+      autoInvestEnabled: serializer.fromJson<bool>(json['autoInvestEnabled']),
+      nextAutoInvestAt: serializer.fromJson<DateTime?>(
+        json['nextAutoInvestAt'],
+      ),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncStatus: serializer.fromJson<String>(json['syncStatus']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'userId': serializer.toJson<String?>(userId),
+      'walletId': serializer.toJson<String>(walletId),
+      'name': serializer.toJson<String>(name),
+      'investmentType': serializer.toJson<String>(investmentType),
+      'targetAmount': serializer.toJson<double>(targetAmount),
+      'periodicAllocation': serializer.toJson<double>(periodicAllocation),
+      'frequency': serializer.toJson<String>(frequency),
+      'startDate': serializer.toJson<DateTime>(startDate),
+      'note': serializer.toJson<String>(note),
+      'currentAmount': serializer.toJson<double>(currentAmount),
+      'isPaused': serializer.toJson<bool>(isPaused),
+      'autoInvestEnabled': serializer.toJson<bool>(autoInvestEnabled),
+      'nextAutoInvestAt': serializer.toJson<DateTime?>(nextAutoInvestAt),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncStatus': serializer.toJson<String>(syncStatus),
+    };
+  }
+
+  InvestmentPlan copyWith({
+    String? id,
+    Value<String?> userId = const Value.absent(),
+    String? walletId,
+    String? name,
+    String? investmentType,
+    double? targetAmount,
+    double? periodicAllocation,
+    String? frequency,
+    DateTime? startDate,
+    String? note,
+    double? currentAmount,
+    bool? isPaused,
+    bool? autoInvestEnabled,
+    Value<DateTime?> nextAutoInvestAt = const Value.absent(),
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    String? syncStatus,
+  }) => InvestmentPlan(
+    id: id ?? this.id,
+    userId: userId.present ? userId.value : this.userId,
+    walletId: walletId ?? this.walletId,
+    name: name ?? this.name,
+    investmentType: investmentType ?? this.investmentType,
+    targetAmount: targetAmount ?? this.targetAmount,
+    periodicAllocation: periodicAllocation ?? this.periodicAllocation,
+    frequency: frequency ?? this.frequency,
+    startDate: startDate ?? this.startDate,
+    note: note ?? this.note,
+    currentAmount: currentAmount ?? this.currentAmount,
+    isPaused: isPaused ?? this.isPaused,
+    autoInvestEnabled: autoInvestEnabled ?? this.autoInvestEnabled,
+    nextAutoInvestAt: nextAutoInvestAt.present
+        ? nextAutoInvestAt.value
+        : this.nextAutoInvestAt,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+  );
+  InvestmentPlan copyWithCompanion(InvestmentPlansCompanion data) {
+    return InvestmentPlan(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      walletId: data.walletId.present ? data.walletId.value : this.walletId,
+      name: data.name.present ? data.name.value : this.name,
+      investmentType: data.investmentType.present
+          ? data.investmentType.value
+          : this.investmentType,
+      targetAmount: data.targetAmount.present
+          ? data.targetAmount.value
+          : this.targetAmount,
+      periodicAllocation: data.periodicAllocation.present
+          ? data.periodicAllocation.value
+          : this.periodicAllocation,
+      frequency: data.frequency.present ? data.frequency.value : this.frequency,
+      startDate: data.startDate.present ? data.startDate.value : this.startDate,
+      note: data.note.present ? data.note.value : this.note,
+      currentAmount: data.currentAmount.present
+          ? data.currentAmount.value
+          : this.currentAmount,
+      isPaused: data.isPaused.present ? data.isPaused.value : this.isPaused,
+      autoInvestEnabled: data.autoInvestEnabled.present
+          ? data.autoInvestEnabled.value
+          : this.autoInvestEnabled,
+      nextAutoInvestAt: data.nextAutoInvestAt.present
+          ? data.nextAutoInvestAt.value
+          : this.nextAutoInvestAt,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InvestmentPlan(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('walletId: $walletId, ')
+          ..write('name: $name, ')
+          ..write('investmentType: $investmentType, ')
+          ..write('targetAmount: $targetAmount, ')
+          ..write('periodicAllocation: $periodicAllocation, ')
+          ..write('frequency: $frequency, ')
+          ..write('startDate: $startDate, ')
+          ..write('note: $note, ')
+          ..write('currentAmount: $currentAmount, ')
+          ..write('isPaused: $isPaused, ')
+          ..write('autoInvestEnabled: $autoInvestEnabled, ')
+          ..write('nextAutoInvestAt: $nextAutoInvestAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    userId,
+    walletId,
+    name,
+    investmentType,
+    targetAmount,
+    periodicAllocation,
+    frequency,
+    startDate,
+    note,
+    currentAmount,
+    isPaused,
+    autoInvestEnabled,
+    nextAutoInvestAt,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is InvestmentPlan &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.walletId == this.walletId &&
+          other.name == this.name &&
+          other.investmentType == this.investmentType &&
+          other.targetAmount == this.targetAmount &&
+          other.periodicAllocation == this.periodicAllocation &&
+          other.frequency == this.frequency &&
+          other.startDate == this.startDate &&
+          other.note == this.note &&
+          other.currentAmount == this.currentAmount &&
+          other.isPaused == this.isPaused &&
+          other.autoInvestEnabled == this.autoInvestEnabled &&
+          other.nextAutoInvestAt == this.nextAutoInvestAt &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.syncStatus == this.syncStatus);
+}
+
+class InvestmentPlansCompanion extends UpdateCompanion<InvestmentPlan> {
+  final Value<String> id;
+  final Value<String?> userId;
+  final Value<String> walletId;
+  final Value<String> name;
+  final Value<String> investmentType;
+  final Value<double> targetAmount;
+  final Value<double> periodicAllocation;
+  final Value<String> frequency;
+  final Value<DateTime> startDate;
+  final Value<String> note;
+  final Value<double> currentAmount;
+  final Value<bool> isPaused;
+  final Value<bool> autoInvestEnabled;
+  final Value<DateTime?> nextAutoInvestAt;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<String> syncStatus;
+  final Value<int> rowid;
+  const InvestmentPlansCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.walletId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.investmentType = const Value.absent(),
+    this.targetAmount = const Value.absent(),
+    this.periodicAllocation = const Value.absent(),
+    this.frequency = const Value.absent(),
+    this.startDate = const Value.absent(),
+    this.note = const Value.absent(),
+    this.currentAmount = const Value.absent(),
+    this.isPaused = const Value.absent(),
+    this.autoInvestEnabled = const Value.absent(),
+    this.nextAutoInvestAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  InvestmentPlansCompanion.insert({
+    required String id,
+    this.userId = const Value.absent(),
+    required String walletId,
+    required String name,
+    required String investmentType,
+    required double targetAmount,
+    required double periodicAllocation,
+    required String frequency,
+    required DateTime startDate,
+    this.note = const Value.absent(),
+    this.currentAmount = const Value.absent(),
+    this.isPaused = const Value.absent(),
+    this.autoInvestEnabled = const Value.absent(),
+    this.nextAutoInvestAt = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       walletId = Value(walletId),
+       name = Value(name),
+       investmentType = Value(investmentType),
+       targetAmount = Value(targetAmount),
+       periodicAllocation = Value(periodicAllocation),
+       frequency = Value(frequency),
+       startDate = Value(startDate);
+  static Insertable<InvestmentPlan> custom({
+    Expression<String>? id,
+    Expression<String>? userId,
+    Expression<String>? walletId,
+    Expression<String>? name,
+    Expression<String>? investmentType,
+    Expression<double>? targetAmount,
+    Expression<double>? periodicAllocation,
+    Expression<String>? frequency,
+    Expression<DateTime>? startDate,
+    Expression<String>? note,
+    Expression<double>? currentAmount,
+    Expression<bool>? isPaused,
+    Expression<bool>? autoInvestEnabled,
+    Expression<DateTime>? nextAutoInvestAt,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (walletId != null) 'wallet_id': walletId,
+      if (name != null) 'name': name,
+      if (investmentType != null) 'investment_type': investmentType,
+      if (targetAmount != null) 'target_amount': targetAmount,
+      if (periodicAllocation != null) 'periodic_allocation': periodicAllocation,
+      if (frequency != null) 'frequency': frequency,
+      if (startDate != null) 'start_date': startDate,
+      if (note != null) 'note': note,
+      if (currentAmount != null) 'current_amount': currentAmount,
+      if (isPaused != null) 'is_paused': isPaused,
+      if (autoInvestEnabled != null) 'auto_invest_enabled': autoInvestEnabled,
+      if (nextAutoInvestAt != null) 'next_auto_invest_at': nextAutoInvestAt,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  InvestmentPlansCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? userId,
+    Value<String>? walletId,
+    Value<String>? name,
+    Value<String>? investmentType,
+    Value<double>? targetAmount,
+    Value<double>? periodicAllocation,
+    Value<String>? frequency,
+    Value<DateTime>? startDate,
+    Value<String>? note,
+    Value<double>? currentAmount,
+    Value<bool>? isPaused,
+    Value<bool>? autoInvestEnabled,
+    Value<DateTime?>? nextAutoInvestAt,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<String>? syncStatus,
+    Value<int>? rowid,
+  }) {
+    return InvestmentPlansCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      walletId: walletId ?? this.walletId,
+      name: name ?? this.name,
+      investmentType: investmentType ?? this.investmentType,
+      targetAmount: targetAmount ?? this.targetAmount,
+      periodicAllocation: periodicAllocation ?? this.periodicAllocation,
+      frequency: frequency ?? this.frequency,
+      startDate: startDate ?? this.startDate,
+      note: note ?? this.note,
+      currentAmount: currentAmount ?? this.currentAmount,
+      isPaused: isPaused ?? this.isPaused,
+      autoInvestEnabled: autoInvestEnabled ?? this.autoInvestEnabled,
+      nextAutoInvestAt: nextAutoInvestAt ?? this.nextAutoInvestAt,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (walletId.present) {
+      map['wallet_id'] = Variable<String>(walletId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (investmentType.present) {
+      map['investment_type'] = Variable<String>(investmentType.value);
+    }
+    if (targetAmount.present) {
+      map['target_amount'] = Variable<double>(targetAmount.value);
+    }
+    if (periodicAllocation.present) {
+      map['periodic_allocation'] = Variable<double>(periodicAllocation.value);
+    }
+    if (frequency.present) {
+      map['frequency'] = Variable<String>(frequency.value);
+    }
+    if (startDate.present) {
+      map['start_date'] = Variable<DateTime>(startDate.value);
+    }
+    if (note.present) {
+      map['note'] = Variable<String>(note.value);
+    }
+    if (currentAmount.present) {
+      map['current_amount'] = Variable<double>(currentAmount.value);
+    }
+    if (isPaused.present) {
+      map['is_paused'] = Variable<bool>(isPaused.value);
+    }
+    if (autoInvestEnabled.present) {
+      map['auto_invest_enabled'] = Variable<bool>(autoInvestEnabled.value);
+    }
+    if (nextAutoInvestAt.present) {
+      map['next_auto_invest_at'] = Variable<DateTime>(nextAutoInvestAt.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<String>(syncStatus.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('InvestmentPlansCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('walletId: $walletId, ')
+          ..write('name: $name, ')
+          ..write('investmentType: $investmentType, ')
+          ..write('targetAmount: $targetAmount, ')
+          ..write('periodicAllocation: $periodicAllocation, ')
+          ..write('frequency: $frequency, ')
+          ..write('startDate: $startDate, ')
+          ..write('note: $note, ')
+          ..write('currentAmount: $currentAmount, ')
+          ..write('isPaused: $isPaused, ')
+          ..write('autoInvestEnabled: $autoInvestEnabled, ')
+          ..write('nextAutoInvestAt: $nextAutoInvestAt, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -3142,6 +4165,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $BudgetsTable budgets = $BudgetsTable(this);
   late final $SavingsGoalsTable savingsGoals = $SavingsGoalsTable(this);
+  late final $InvestmentPlansTable investmentPlans = $InvestmentPlansTable(
+    this,
+  );
   late final WalletsDao walletsDao = WalletsDao(this as AppDatabase);
   late final CategoriesDao categoriesDao = CategoriesDao(this as AppDatabase);
   late final TransactionsDao transactionsDao = TransactionsDao(
@@ -3149,6 +4175,9 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   );
   late final BudgetsDao budgetsDao = BudgetsDao(this as AppDatabase);
   late final SavingsGoalsDao savingsGoalsDao = SavingsGoalsDao(
+    this as AppDatabase,
+  );
+  late final InvestmentPlansDao investmentPlansDao = InvestmentPlansDao(
     this as AppDatabase,
   );
   @override
@@ -3161,6 +4190,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     transactions,
     budgets,
     savingsGoals,
+    investmentPlans,
   ];
 }
 
@@ -3224,6 +4254,26 @@ final class $$WalletsTableReferences
     ).filter((f) => f.walletId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_savingsGoalsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$InvestmentPlansTable, List<InvestmentPlan>>
+  _investmentPlansRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.investmentPlans,
+    aliasName: $_aliasNameGenerator(db.wallets.id, db.investmentPlans.walletId),
+  );
+
+  $$InvestmentPlansTableProcessedTableManager get investmentPlansRefs {
+    final manager = $$InvestmentPlansTableTableManager(
+      $_db,
+      $_db.investmentPlans,
+    ).filter((f) => f.walletId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(
+      _investmentPlansRefsTable($_db),
+    );
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -3320,6 +4370,31 @@ class $$WalletsTableFilterComposer
           }) => $$SavingsGoalsTableFilterComposer(
             $db: $db,
             $table: $db.savingsGoals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> investmentPlansRefs(
+    Expression<bool> Function($$InvestmentPlansTableFilterComposer f) f,
+  ) {
+    final $$InvestmentPlansTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.investmentPlans,
+      getReferencedColumn: (t) => t.walletId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InvestmentPlansTableFilterComposer(
+            $db: $db,
+            $table: $db.investmentPlans,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -3464,6 +4539,31 @@ class $$WalletsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> investmentPlansRefs<T extends Object>(
+    Expression<T> Function($$InvestmentPlansTableAnnotationComposer a) f,
+  ) {
+    final $$InvestmentPlansTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.investmentPlans,
+      getReferencedColumn: (t) => t.walletId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$InvestmentPlansTableAnnotationComposer(
+            $db: $db,
+            $table: $db.investmentPlans,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$WalletsTableTableManager
@@ -3479,7 +4579,11 @@ class $$WalletsTableTableManager
           $$WalletsTableUpdateCompanionBuilder,
           (Wallet, $$WalletsTableReferences),
           Wallet,
-          PrefetchHooks Function({bool transactionsRefs, bool savingsGoalsRefs})
+          PrefetchHooks Function({
+            bool transactionsRefs,
+            bool savingsGoalsRefs,
+            bool investmentPlansRefs,
+          })
         > {
   $$WalletsTableTableManager(_$AppDatabase db, $WalletsTable table)
     : super(
@@ -3545,12 +4649,17 @@ class $$WalletsTableTableManager
               )
               .toList(),
           prefetchHooksCallback:
-              ({transactionsRefs = false, savingsGoalsRefs = false}) {
+              ({
+                transactionsRefs = false,
+                savingsGoalsRefs = false,
+                investmentPlansRefs = false,
+              }) {
                 return PrefetchHooks(
                   db: db,
                   explicitlyWatchedTables: [
                     if (transactionsRefs) db.transactions,
                     if (savingsGoalsRefs) db.savingsGoals,
+                    if (investmentPlansRefs) db.investmentPlans,
                   ],
                   addJoins: null,
                   getPrefetchedDataCallback: (items) async {
@@ -3597,6 +4706,27 @@ class $$WalletsTableTableManager
                               ),
                           typedResults: items,
                         ),
+                      if (investmentPlansRefs)
+                        await $_getPrefetchedData<
+                          Wallet,
+                          $WalletsTable,
+                          InvestmentPlan
+                        >(
+                          currentTable: table,
+                          referencedTable: $$WalletsTableReferences
+                              ._investmentPlansRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$WalletsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).investmentPlansRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.walletId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
                     ];
                   },
                 );
@@ -3617,7 +4747,11 @@ typedef $$WalletsTableProcessedTableManager =
       $$WalletsTableUpdateCompanionBuilder,
       (Wallet, $$WalletsTableReferences),
       Wallet,
-      PrefetchHooks Function({bool transactionsRefs, bool savingsGoalsRefs})
+      PrefetchHooks Function({
+        bool transactionsRefs,
+        bool savingsGoalsRefs,
+        bool investmentPlansRefs,
+      })
     >;
 typedef $$CategoriesTableCreateCompanionBuilder =
     CategoriesCompanion Function({
@@ -5540,6 +6674,595 @@ typedef $$SavingsGoalsTableProcessedTableManager =
       SavingsGoal,
       PrefetchHooks Function({bool walletId})
     >;
+typedef $$InvestmentPlansTableCreateCompanionBuilder =
+    InvestmentPlansCompanion Function({
+      required String id,
+      Value<String?> userId,
+      required String walletId,
+      required String name,
+      required String investmentType,
+      required double targetAmount,
+      required double periodicAllocation,
+      required String frequency,
+      required DateTime startDate,
+      Value<String> note,
+      Value<double> currentAmount,
+      Value<bool> isPaused,
+      Value<bool> autoInvestEnabled,
+      Value<DateTime?> nextAutoInvestAt,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> rowid,
+    });
+typedef $$InvestmentPlansTableUpdateCompanionBuilder =
+    InvestmentPlansCompanion Function({
+      Value<String> id,
+      Value<String?> userId,
+      Value<String> walletId,
+      Value<String> name,
+      Value<String> investmentType,
+      Value<double> targetAmount,
+      Value<double> periodicAllocation,
+      Value<String> frequency,
+      Value<DateTime> startDate,
+      Value<String> note,
+      Value<double> currentAmount,
+      Value<bool> isPaused,
+      Value<bool> autoInvestEnabled,
+      Value<DateTime?> nextAutoInvestAt,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> rowid,
+    });
+
+final class $$InvestmentPlansTableReferences
+    extends
+        BaseReferences<_$AppDatabase, $InvestmentPlansTable, InvestmentPlan> {
+  $$InvestmentPlansTableReferences(
+    super.$_db,
+    super.$_table,
+    super.$_typedResult,
+  );
+
+  static $WalletsTable _walletIdTable(_$AppDatabase db) =>
+      db.wallets.createAlias(
+        $_aliasNameGenerator(db.investmentPlans.walletId, db.wallets.id),
+      );
+
+  $$WalletsTableProcessedTableManager get walletId {
+    final $_column = $_itemColumn<String>('wallet_id')!;
+
+    final manager = $$WalletsTableTableManager(
+      $_db,
+      $_db.wallets,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_walletIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$InvestmentPlansTableFilterComposer
+    extends Composer<_$AppDatabase, $InvestmentPlansTable> {
+  $$InvestmentPlansTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get investmentType => $composableBuilder(
+    column: $table.investmentType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get targetAmount => $composableBuilder(
+    column: $table.targetAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get periodicAllocation => $composableBuilder(
+    column: $table.periodicAllocation,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get frequency => $composableBuilder(
+    column: $table.frequency,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get currentAmount => $composableBuilder(
+    column: $table.currentAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPaused => $composableBuilder(
+    column: $table.isPaused,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get autoInvestEnabled => $composableBuilder(
+    column: $table.autoInvestEnabled,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get nextAutoInvestAt => $composableBuilder(
+    column: $table.nextAutoInvestAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$WalletsTableFilterComposer get walletId {
+    final $$WalletsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.walletId,
+      referencedTable: $db.wallets,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WalletsTableFilterComposer(
+            $db: $db,
+            $table: $db.wallets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$InvestmentPlansTableOrderingComposer
+    extends Composer<_$AppDatabase, $InvestmentPlansTable> {
+  $$InvestmentPlansTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get investmentType => $composableBuilder(
+    column: $table.investmentType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get targetAmount => $composableBuilder(
+    column: $table.targetAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get periodicAllocation => $composableBuilder(
+    column: $table.periodicAllocation,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get frequency => $composableBuilder(
+    column: $table.frequency,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startDate => $composableBuilder(
+    column: $table.startDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get note => $composableBuilder(
+    column: $table.note,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get currentAmount => $composableBuilder(
+    column: $table.currentAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPaused => $composableBuilder(
+    column: $table.isPaused,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get autoInvestEnabled => $composableBuilder(
+    column: $table.autoInvestEnabled,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get nextAutoInvestAt => $composableBuilder(
+    column: $table.nextAutoInvestAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$WalletsTableOrderingComposer get walletId {
+    final $$WalletsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.walletId,
+      referencedTable: $db.wallets,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WalletsTableOrderingComposer(
+            $db: $db,
+            $table: $db.wallets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$InvestmentPlansTableAnnotationComposer
+    extends Composer<_$AppDatabase, $InvestmentPlansTable> {
+  $$InvestmentPlansTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<String> get investmentType => $composableBuilder(
+    column: $table.investmentType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get targetAmount => $composableBuilder(
+    column: $table.targetAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get periodicAllocation => $composableBuilder(
+    column: $table.periodicAllocation,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get frequency =>
+      $composableBuilder(column: $table.frequency, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startDate =>
+      $composableBuilder(column: $table.startDate, builder: (column) => column);
+
+  GeneratedColumn<String> get note =>
+      $composableBuilder(column: $table.note, builder: (column) => column);
+
+  GeneratedColumn<double> get currentAmount => $composableBuilder(
+    column: $table.currentAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<bool> get isPaused =>
+      $composableBuilder(column: $table.isPaused, builder: (column) => column);
+
+  GeneratedColumn<bool> get autoInvestEnabled => $composableBuilder(
+    column: $table.autoInvestEnabled,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get nextAutoInvestAt => $composableBuilder(
+    column: $table.nextAutoInvestAt,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => column,
+  );
+
+  $$WalletsTableAnnotationComposer get walletId {
+    final $$WalletsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.walletId,
+      referencedTable: $db.wallets,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WalletsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.wallets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$InvestmentPlansTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $InvestmentPlansTable,
+          InvestmentPlan,
+          $$InvestmentPlansTableFilterComposer,
+          $$InvestmentPlansTableOrderingComposer,
+          $$InvestmentPlansTableAnnotationComposer,
+          $$InvestmentPlansTableCreateCompanionBuilder,
+          $$InvestmentPlansTableUpdateCompanionBuilder,
+          (InvestmentPlan, $$InvestmentPlansTableReferences),
+          InvestmentPlan,
+          PrefetchHooks Function({bool walletId})
+        > {
+  $$InvestmentPlansTableTableManager(
+    _$AppDatabase db,
+    $InvestmentPlansTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$InvestmentPlansTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$InvestmentPlansTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$InvestmentPlansTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> userId = const Value.absent(),
+                Value<String> walletId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<String> investmentType = const Value.absent(),
+                Value<double> targetAmount = const Value.absent(),
+                Value<double> periodicAllocation = const Value.absent(),
+                Value<String> frequency = const Value.absent(),
+                Value<DateTime> startDate = const Value.absent(),
+                Value<String> note = const Value.absent(),
+                Value<double> currentAmount = const Value.absent(),
+                Value<bool> isPaused = const Value.absent(),
+                Value<bool> autoInvestEnabled = const Value.absent(),
+                Value<DateTime?> nextAutoInvestAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => InvestmentPlansCompanion(
+                id: id,
+                userId: userId,
+                walletId: walletId,
+                name: name,
+                investmentType: investmentType,
+                targetAmount: targetAmount,
+                periodicAllocation: periodicAllocation,
+                frequency: frequency,
+                startDate: startDate,
+                note: note,
+                currentAmount: currentAmount,
+                isPaused: isPaused,
+                autoInvestEnabled: autoInvestEnabled,
+                nextAutoInvestAt: nextAutoInvestAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> userId = const Value.absent(),
+                required String walletId,
+                required String name,
+                required String investmentType,
+                required double targetAmount,
+                required double periodicAllocation,
+                required String frequency,
+                required DateTime startDate,
+                Value<String> note = const Value.absent(),
+                Value<double> currentAmount = const Value.absent(),
+                Value<bool> isPaused = const Value.absent(),
+                Value<bool> autoInvestEnabled = const Value.absent(),
+                Value<DateTime?> nextAutoInvestAt = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => InvestmentPlansCompanion.insert(
+                id: id,
+                userId: userId,
+                walletId: walletId,
+                name: name,
+                investmentType: investmentType,
+                targetAmount: targetAmount,
+                periodicAllocation: periodicAllocation,
+                frequency: frequency,
+                startDate: startDate,
+                note: note,
+                currentAmount: currentAmount,
+                isPaused: isPaused,
+                autoInvestEnabled: autoInvestEnabled,
+                nextAutoInvestAt: nextAutoInvestAt,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$InvestmentPlansTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({walletId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (walletId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.walletId,
+                                referencedTable:
+                                    $$InvestmentPlansTableReferences
+                                        ._walletIdTable(db),
+                                referencedColumn:
+                                    $$InvestmentPlansTableReferences
+                                        ._walletIdTable(db)
+                                        .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$InvestmentPlansTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $InvestmentPlansTable,
+      InvestmentPlan,
+      $$InvestmentPlansTableFilterComposer,
+      $$InvestmentPlansTableOrderingComposer,
+      $$InvestmentPlansTableAnnotationComposer,
+      $$InvestmentPlansTableCreateCompanionBuilder,
+      $$InvestmentPlansTableUpdateCompanionBuilder,
+      (InvestmentPlan, $$InvestmentPlansTableReferences),
+      InvestmentPlan,
+      PrefetchHooks Function({bool walletId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -5554,4 +7277,6 @@ class $AppDatabaseManager {
       $$BudgetsTableTableManager(_db, _db.budgets);
   $$SavingsGoalsTableTableManager get savingsGoals =>
       $$SavingsGoalsTableTableManager(_db, _db.savingsGoals);
+  $$InvestmentPlansTableTableManager get investmentPlans =>
+      $$InvestmentPlansTableTableManager(_db, _db.investmentPlans);
 }

@@ -106,3 +106,62 @@ class SavingsGoalModel {
     return 'Ongoing';
   }
 }
+
+class InvestmentPlanModel {
+  final String id;
+  final String walletId;
+  final String name;
+  final String investmentType;
+  final double targetAmount;
+  final double periodicAllocation;
+  final String frequency;
+  final DateTime startDate;
+  final String note;
+  final double currentAmount;
+  final bool isPaused;
+  final bool autoInvestEnabled;
+
+  final String? walletName;
+
+  const InvestmentPlanModel({
+    required this.id,
+    required this.walletId,
+    required this.name,
+    required this.investmentType,
+    required this.targetAmount,
+    required this.periodicAllocation,
+    required this.frequency,
+    required this.startDate,
+    required this.note,
+    required this.currentAmount,
+    required this.isPaused,
+    required this.autoInvestEnabled,
+    this.walletName,
+  });
+
+  double get progress => targetAmount <= 0 ? 0 : (currentAmount / targetAmount).clamp(0, 1);
+
+  String get status {
+    if (isPaused) return 'Paused';
+    if (currentAmount >= targetAmount) return 'Completed';
+    return 'Active';
+  }
+
+  DateTime? get estimatedFinishDate {
+    if (periodicAllocation <= 0 || frequency.isEmpty) return null;
+    final remaining = (targetAmount - currentAmount).clamp(0, double.infinity);
+    if (remaining <= 0) return DateTime.now();
+    final cycles = (remaining / periodicAllocation).ceil();
+    switch (frequency) {
+      case 'daily':
+        return DateTime.now().add(Duration(days: cycles));
+      case 'weekly':
+        return DateTime.now().add(Duration(days: cycles * 7));
+      case 'yearly':
+        return DateTime(DateTime.now().year + cycles, DateTime.now().month, DateTime.now().day);
+      case 'monthly':
+      default:
+        return DateTime(DateTime.now().year, DateTime.now().month + cycles, DateTime.now().day);
+    }
+  }
+}

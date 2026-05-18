@@ -10,7 +10,7 @@ import '../../domain/models/models.dart';
 class BudgetScreen extends ConsumerWidget {
   const BudgetScreen({super.key});
 
-  Future<void> _showAddBudgetDialog(
+  Future<void> _showAddBudgetSheet(
     BuildContext context,
     WidgetRef ref,
     List<CategoryModel> expenseCategories,
@@ -20,18 +20,25 @@ class BudgetScreen extends ConsumerWidget {
     final limitController = TextEditingController();
     var selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
 
-    final result = await showDialog<bool>(
+    final result = await showModalBottomSheet<bool>(
       context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (dialogContext) {
         return StatefulBuilder(
           builder: (context, setSheetState) {
-            return AlertDialog(
-              title: const Text('Tambah Budget'),
-              content: SizedBox(
-                width: 340,
+            return Padding(
+              padding: EdgeInsets.fromLTRB(16, 8, 16, MediaQuery.of(context).viewInsets.bottom + 16),
+              child: SingleChildScrollView(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text('Tambah Budget', style: Theme.of(context).textTheme.titleLarge),
+                    const SizedBox(height: 16),
                     DropdownButtonFormField<String>(
                       initialValue: selectedCategoryId,
                       decoration: const InputDecoration(labelText: 'Kategori'),
@@ -48,7 +55,7 @@ class BudgetScreen extends ConsumerWidget {
                         setSheetState(() => selectedCategoryId = value);
                       },
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     TextFormField(
                       controller: limitController,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
@@ -57,7 +64,7 @@ class BudgetScreen extends ConsumerWidget {
                         hintText: 'contoh: 1500000',
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 16),
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       title: const Text('Bulan'),
@@ -77,16 +84,19 @@ class BudgetScreen extends ConsumerWidget {
                         });
                       },
                     ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(false),
-                  child: const Text('Batal'),
-                ),
-                FilledButton(
-                  onPressed: () async {
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () => Navigator.of(dialogContext).pop(false),
+                            child: const Text('Batal'),
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: FilledButton(
+                            onPressed: () async {
                     final limitAmount = double.tryParse(limitController.text.trim());
                     if (limitAmount == null || limitAmount <= 0) {
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -103,10 +113,15 @@ class BudgetScreen extends ConsumerWidget {
 
                     if (!context.mounted) return;
                     Navigator.of(dialogContext).pop(true);
-                  },
-                  child: const Text('Simpan'),
+                            },
+                            child: const Text('Simpan'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-              ],
+              ),
             );
           },
         );
@@ -153,7 +168,7 @@ class BudgetScreen extends ConsumerWidget {
                 return;
               }
 
-              _showAddBudgetDialog(context, ref, expenseCategories);
+              _showAddBudgetSheet(context, ref, expenseCategories);
             },
           ),
         ],

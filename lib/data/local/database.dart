@@ -10,23 +10,25 @@ import 'tables/wallets.dart';
 import 'tables/categories.dart';
 import 'tables/transactions.dart';
 import 'tables/budgets.dart';
+import 'tables/savings_goals.dart';
 
 import 'daos/wallets_dao.dart';
 import 'daos/categories_dao.dart';
 import 'daos/transactions_dao.dart';
 import 'daos/budgets_dao.dart';
+import 'daos/savings_goals_dao.dart';
 
 part 'database.g.dart';
 
 @DriftDatabase(
-  tables: [Wallets, Categories, Transactions, Budgets],
-  daos: [WalletsDao, CategoriesDao, TransactionsDao, BudgetsDao],
+  tables: [Wallets, Categories, Transactions, Budgets, SavingsGoals],
+  daos: [WalletsDao, CategoriesDao, TransactionsDao, BudgetsDao, SavingsGoalsDao],
 )
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -73,6 +75,9 @@ class AppDatabase extends _$AppDatabase {
             updated_at TEXT NOT NULL
           )
         ''');
+      }
+      if (from < 3) {
+        await m.createTable(savingsGoals);
       }
     },
   );

@@ -46,7 +46,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<int>(
-                      value: tempYear,
+                      initialValue: tempYear,
                       decoration: const InputDecoration(labelText: 'Tahun'),
                       items: years
                           .map(

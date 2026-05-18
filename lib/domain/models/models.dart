@@ -66,3 +66,43 @@ class BudgetModel {
     this.usedAmount = 0.0,
   });
 }
+
+class SavingsGoalModel {
+  final String id;
+  final String walletId;
+  final String name;
+  final double targetAmount;
+  final double currentAmount;
+  final DateTime? targetDate;
+  final String priority;
+  final String description;
+  final String icon;
+  final bool isPaused;
+
+  final String? walletName;
+
+  const SavingsGoalModel({
+    required this.id,
+    required this.walletId,
+    required this.name,
+    required this.targetAmount,
+    required this.currentAmount,
+    this.targetDate,
+    required this.priority,
+    required this.description,
+    required this.icon,
+    this.isPaused = false,
+    this.walletName,
+  });
+
+  double get remainingAmount => (targetAmount - currentAmount).clamp(0, double.infinity);
+
+  double get progress => targetAmount <= 0 ? 0 : (currentAmount / targetAmount).clamp(0, 1);
+
+  String get status {
+    if (isPaused) return 'Paused';
+    if (currentAmount >= targetAmount) return 'Completed';
+    if (targetDate != null && DateTime.now().isAfter(targetDate!)) return 'Failed';
+    return 'Ongoing';
+  }
+}

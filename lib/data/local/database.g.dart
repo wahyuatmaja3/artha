@@ -2280,6 +2280,860 @@ class BudgetsCompanion extends UpdateCompanion<Budget> {
   }
 }
 
+class $SavingsGoalsTable extends SavingsGoals
+    with TableInfo<$SavingsGoalsTable, SavingsGoal> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SavingsGoalsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _walletIdMeta = const VerificationMeta(
+    'walletId',
+  );
+  @override
+  late final GeneratedColumn<String> walletId = GeneratedColumn<String>(
+    'wallet_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'REFERENCES wallets (id)',
+    ),
+  );
+  static const VerificationMeta _nameMeta = const VerificationMeta('name');
+  @override
+  late final GeneratedColumn<String> name = GeneratedColumn<String>(
+    'name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _targetAmountMeta = const VerificationMeta(
+    'targetAmount',
+  );
+  @override
+  late final GeneratedColumn<double> targetAmount = GeneratedColumn<double>(
+    'target_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _currentAmountMeta = const VerificationMeta(
+    'currentAmount',
+  );
+  @override
+  late final GeneratedColumn<double> currentAmount = GeneratedColumn<double>(
+    'current_amount',
+    aliasedName,
+    false,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0.0),
+  );
+  static const VerificationMeta _targetDateMeta = const VerificationMeta(
+    'targetDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> targetDate = GeneratedColumn<DateTime>(
+    'target_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<String> priority = GeneratedColumn<String>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('medium'),
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _iconMeta = const VerificationMeta('icon');
+  @override
+  late final GeneratedColumn<String> icon = GeneratedColumn<String>(
+    'icon',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('🎯'),
+  );
+  static const VerificationMeta _isPausedMeta = const VerificationMeta(
+    'isPaused',
+  );
+  @override
+  late final GeneratedColumn<bool> isPaused = GeneratedColumn<bool>(
+    'is_paused',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_paused" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+    defaultValue: currentDateAndTime,
+  );
+  static const VerificationMeta _deletedAtMeta = const VerificationMeta(
+    'deletedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> deletedAt = GeneratedColumn<DateTime>(
+    'deleted_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _syncStatusMeta = const VerificationMeta(
+    'syncStatus',
+  );
+  @override
+  late final GeneratedColumn<String> syncStatus = GeneratedColumn<String>(
+    'sync_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('pending'),
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    userId,
+    walletId,
+    name,
+    targetAmount,
+    currentAmount,
+    targetDate,
+    priority,
+    description,
+    icon,
+    isPaused,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'savings_goals';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SavingsGoal> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    }
+    if (data.containsKey('wallet_id')) {
+      context.handle(
+        _walletIdMeta,
+        walletId.isAcceptableOrUnknown(data['wallet_id']!, _walletIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_walletIdMeta);
+    }
+    if (data.containsKey('name')) {
+      context.handle(
+        _nameMeta,
+        name.isAcceptableOrUnknown(data['name']!, _nameMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_nameMeta);
+    }
+    if (data.containsKey('target_amount')) {
+      context.handle(
+        _targetAmountMeta,
+        targetAmount.isAcceptableOrUnknown(
+          data['target_amount']!,
+          _targetAmountMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_targetAmountMeta);
+    }
+    if (data.containsKey('current_amount')) {
+      context.handle(
+        _currentAmountMeta,
+        currentAmount.isAcceptableOrUnknown(
+          data['current_amount']!,
+          _currentAmountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('target_date')) {
+      context.handle(
+        _targetDateMeta,
+        targetDate.isAcceptableOrUnknown(data['target_date']!, _targetDateMeta),
+      );
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('icon')) {
+      context.handle(
+        _iconMeta,
+        icon.isAcceptableOrUnknown(data['icon']!, _iconMeta),
+      );
+    }
+    if (data.containsKey('is_paused')) {
+      context.handle(
+        _isPausedMeta,
+        isPaused.isAcceptableOrUnknown(data['is_paused']!, _isPausedMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    }
+    if (data.containsKey('deleted_at')) {
+      context.handle(
+        _deletedAtMeta,
+        deletedAt.isAcceptableOrUnknown(data['deleted_at']!, _deletedAtMeta),
+      );
+    }
+    if (data.containsKey('sync_status')) {
+      context.handle(
+        _syncStatusMeta,
+        syncStatus.isAcceptableOrUnknown(data['sync_status']!, _syncStatusMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SavingsGoal map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SavingsGoal(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      ),
+      walletId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}wallet_id'],
+      )!,
+      name: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}name'],
+      )!,
+      targetAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}target_amount'],
+      )!,
+      currentAmount: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}current_amount'],
+      )!,
+      targetDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}target_date'],
+      ),
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}priority'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      icon: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}icon'],
+      )!,
+      isPaused: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_paused'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      deletedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}deleted_at'],
+      ),
+      syncStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}sync_status'],
+      )!,
+    );
+  }
+
+  @override
+  $SavingsGoalsTable createAlias(String alias) {
+    return $SavingsGoalsTable(attachedDatabase, alias);
+  }
+}
+
+class SavingsGoal extends DataClass implements Insertable<SavingsGoal> {
+  final String id;
+  final String? userId;
+  final String walletId;
+  final String name;
+  final double targetAmount;
+  final double currentAmount;
+  final DateTime? targetDate;
+  final String priority;
+  final String description;
+  final String icon;
+  final bool isPaused;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? deletedAt;
+  final String syncStatus;
+  const SavingsGoal({
+    required this.id,
+    this.userId,
+    required this.walletId,
+    required this.name,
+    required this.targetAmount,
+    required this.currentAmount,
+    this.targetDate,
+    required this.priority,
+    required this.description,
+    required this.icon,
+    required this.isPaused,
+    required this.createdAt,
+    required this.updatedAt,
+    this.deletedAt,
+    required this.syncStatus,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    if (!nullToAbsent || userId != null) {
+      map['user_id'] = Variable<String>(userId);
+    }
+    map['wallet_id'] = Variable<String>(walletId);
+    map['name'] = Variable<String>(name);
+    map['target_amount'] = Variable<double>(targetAmount);
+    map['current_amount'] = Variable<double>(currentAmount);
+    if (!nullToAbsent || targetDate != null) {
+      map['target_date'] = Variable<DateTime>(targetDate);
+    }
+    map['priority'] = Variable<String>(priority);
+    map['description'] = Variable<String>(description);
+    map['icon'] = Variable<String>(icon);
+    map['is_paused'] = Variable<bool>(isPaused);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || deletedAt != null) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt);
+    }
+    map['sync_status'] = Variable<String>(syncStatus);
+    return map;
+  }
+
+  SavingsGoalsCompanion toCompanion(bool nullToAbsent) {
+    return SavingsGoalsCompanion(
+      id: Value(id),
+      userId: userId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(userId),
+      walletId: Value(walletId),
+      name: Value(name),
+      targetAmount: Value(targetAmount),
+      currentAmount: Value(currentAmount),
+      targetDate: targetDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(targetDate),
+      priority: Value(priority),
+      description: Value(description),
+      icon: Value(icon),
+      isPaused: Value(isPaused),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      deletedAt: deletedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(deletedAt),
+      syncStatus: Value(syncStatus),
+    );
+  }
+
+  factory SavingsGoal.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SavingsGoal(
+      id: serializer.fromJson<String>(json['id']),
+      userId: serializer.fromJson<String?>(json['userId']),
+      walletId: serializer.fromJson<String>(json['walletId']),
+      name: serializer.fromJson<String>(json['name']),
+      targetAmount: serializer.fromJson<double>(json['targetAmount']),
+      currentAmount: serializer.fromJson<double>(json['currentAmount']),
+      targetDate: serializer.fromJson<DateTime?>(json['targetDate']),
+      priority: serializer.fromJson<String>(json['priority']),
+      description: serializer.fromJson<String>(json['description']),
+      icon: serializer.fromJson<String>(json['icon']),
+      isPaused: serializer.fromJson<bool>(json['isPaused']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      deletedAt: serializer.fromJson<DateTime?>(json['deletedAt']),
+      syncStatus: serializer.fromJson<String>(json['syncStatus']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'userId': serializer.toJson<String?>(userId),
+      'walletId': serializer.toJson<String>(walletId),
+      'name': serializer.toJson<String>(name),
+      'targetAmount': serializer.toJson<double>(targetAmount),
+      'currentAmount': serializer.toJson<double>(currentAmount),
+      'targetDate': serializer.toJson<DateTime?>(targetDate),
+      'priority': serializer.toJson<String>(priority),
+      'description': serializer.toJson<String>(description),
+      'icon': serializer.toJson<String>(icon),
+      'isPaused': serializer.toJson<bool>(isPaused),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'deletedAt': serializer.toJson<DateTime?>(deletedAt),
+      'syncStatus': serializer.toJson<String>(syncStatus),
+    };
+  }
+
+  SavingsGoal copyWith({
+    String? id,
+    Value<String?> userId = const Value.absent(),
+    String? walletId,
+    String? name,
+    double? targetAmount,
+    double? currentAmount,
+    Value<DateTime?> targetDate = const Value.absent(),
+    String? priority,
+    String? description,
+    String? icon,
+    bool? isPaused,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> deletedAt = const Value.absent(),
+    String? syncStatus,
+  }) => SavingsGoal(
+    id: id ?? this.id,
+    userId: userId.present ? userId.value : this.userId,
+    walletId: walletId ?? this.walletId,
+    name: name ?? this.name,
+    targetAmount: targetAmount ?? this.targetAmount,
+    currentAmount: currentAmount ?? this.currentAmount,
+    targetDate: targetDate.present ? targetDate.value : this.targetDate,
+    priority: priority ?? this.priority,
+    description: description ?? this.description,
+    icon: icon ?? this.icon,
+    isPaused: isPaused ?? this.isPaused,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    deletedAt: deletedAt.present ? deletedAt.value : this.deletedAt,
+    syncStatus: syncStatus ?? this.syncStatus,
+  );
+  SavingsGoal copyWithCompanion(SavingsGoalsCompanion data) {
+    return SavingsGoal(
+      id: data.id.present ? data.id.value : this.id,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      walletId: data.walletId.present ? data.walletId.value : this.walletId,
+      name: data.name.present ? data.name.value : this.name,
+      targetAmount: data.targetAmount.present
+          ? data.targetAmount.value
+          : this.targetAmount,
+      currentAmount: data.currentAmount.present
+          ? data.currentAmount.value
+          : this.currentAmount,
+      targetDate: data.targetDate.present
+          ? data.targetDate.value
+          : this.targetDate,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      icon: data.icon.present ? data.icon.value : this.icon,
+      isPaused: data.isPaused.present ? data.isPaused.value : this.isPaused,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      deletedAt: data.deletedAt.present ? data.deletedAt.value : this.deletedAt,
+      syncStatus: data.syncStatus.present
+          ? data.syncStatus.value
+          : this.syncStatus,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavingsGoal(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('walletId: $walletId, ')
+          ..write('name: $name, ')
+          ..write('targetAmount: $targetAmount, ')
+          ..write('currentAmount: $currentAmount, ')
+          ..write('targetDate: $targetDate, ')
+          ..write('priority: $priority, ')
+          ..write('description: $description, ')
+          ..write('icon: $icon, ')
+          ..write('isPaused: $isPaused, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    userId,
+    walletId,
+    name,
+    targetAmount,
+    currentAmount,
+    targetDate,
+    priority,
+    description,
+    icon,
+    isPaused,
+    createdAt,
+    updatedAt,
+    deletedAt,
+    syncStatus,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SavingsGoal &&
+          other.id == this.id &&
+          other.userId == this.userId &&
+          other.walletId == this.walletId &&
+          other.name == this.name &&
+          other.targetAmount == this.targetAmount &&
+          other.currentAmount == this.currentAmount &&
+          other.targetDate == this.targetDate &&
+          other.priority == this.priority &&
+          other.description == this.description &&
+          other.icon == this.icon &&
+          other.isPaused == this.isPaused &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.deletedAt == this.deletedAt &&
+          other.syncStatus == this.syncStatus);
+}
+
+class SavingsGoalsCompanion extends UpdateCompanion<SavingsGoal> {
+  final Value<String> id;
+  final Value<String?> userId;
+  final Value<String> walletId;
+  final Value<String> name;
+  final Value<double> targetAmount;
+  final Value<double> currentAmount;
+  final Value<DateTime?> targetDate;
+  final Value<String> priority;
+  final Value<String> description;
+  final Value<String> icon;
+  final Value<bool> isPaused;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> deletedAt;
+  final Value<String> syncStatus;
+  final Value<int> rowid;
+  const SavingsGoalsCompanion({
+    this.id = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.walletId = const Value.absent(),
+    this.name = const Value.absent(),
+    this.targetAmount = const Value.absent(),
+    this.currentAmount = const Value.absent(),
+    this.targetDate = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.description = const Value.absent(),
+    this.icon = const Value.absent(),
+    this.isPaused = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SavingsGoalsCompanion.insert({
+    required String id,
+    this.userId = const Value.absent(),
+    required String walletId,
+    required String name,
+    required double targetAmount,
+    this.currentAmount = const Value.absent(),
+    this.targetDate = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.description = const Value.absent(),
+    this.icon = const Value.absent(),
+    this.isPaused = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.deletedAt = const Value.absent(),
+    this.syncStatus = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       walletId = Value(walletId),
+       name = Value(name),
+       targetAmount = Value(targetAmount);
+  static Insertable<SavingsGoal> custom({
+    Expression<String>? id,
+    Expression<String>? userId,
+    Expression<String>? walletId,
+    Expression<String>? name,
+    Expression<double>? targetAmount,
+    Expression<double>? currentAmount,
+    Expression<DateTime>? targetDate,
+    Expression<String>? priority,
+    Expression<String>? description,
+    Expression<String>? icon,
+    Expression<bool>? isPaused,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? deletedAt,
+    Expression<String>? syncStatus,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (userId != null) 'user_id': userId,
+      if (walletId != null) 'wallet_id': walletId,
+      if (name != null) 'name': name,
+      if (targetAmount != null) 'target_amount': targetAmount,
+      if (currentAmount != null) 'current_amount': currentAmount,
+      if (targetDate != null) 'target_date': targetDate,
+      if (priority != null) 'priority': priority,
+      if (description != null) 'description': description,
+      if (icon != null) 'icon': icon,
+      if (isPaused != null) 'is_paused': isPaused,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (deletedAt != null) 'deleted_at': deletedAt,
+      if (syncStatus != null) 'sync_status': syncStatus,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SavingsGoalsCompanion copyWith({
+    Value<String>? id,
+    Value<String?>? userId,
+    Value<String>? walletId,
+    Value<String>? name,
+    Value<double>? targetAmount,
+    Value<double>? currentAmount,
+    Value<DateTime?>? targetDate,
+    Value<String>? priority,
+    Value<String>? description,
+    Value<String>? icon,
+    Value<bool>? isPaused,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? deletedAt,
+    Value<String>? syncStatus,
+    Value<int>? rowid,
+  }) {
+    return SavingsGoalsCompanion(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      walletId: walletId ?? this.walletId,
+      name: name ?? this.name,
+      targetAmount: targetAmount ?? this.targetAmount,
+      currentAmount: currentAmount ?? this.currentAmount,
+      targetDate: targetDate ?? this.targetDate,
+      priority: priority ?? this.priority,
+      description: description ?? this.description,
+      icon: icon ?? this.icon,
+      isPaused: isPaused ?? this.isPaused,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      deletedAt: deletedAt ?? this.deletedAt,
+      syncStatus: syncStatus ?? this.syncStatus,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (walletId.present) {
+      map['wallet_id'] = Variable<String>(walletId.value);
+    }
+    if (name.present) {
+      map['name'] = Variable<String>(name.value);
+    }
+    if (targetAmount.present) {
+      map['target_amount'] = Variable<double>(targetAmount.value);
+    }
+    if (currentAmount.present) {
+      map['current_amount'] = Variable<double>(currentAmount.value);
+    }
+    if (targetDate.present) {
+      map['target_date'] = Variable<DateTime>(targetDate.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<String>(priority.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (icon.present) {
+      map['icon'] = Variable<String>(icon.value);
+    }
+    if (isPaused.present) {
+      map['is_paused'] = Variable<bool>(isPaused.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (deletedAt.present) {
+      map['deleted_at'] = Variable<DateTime>(deletedAt.value);
+    }
+    if (syncStatus.present) {
+      map['sync_status'] = Variable<String>(syncStatus.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SavingsGoalsCompanion(')
+          ..write('id: $id, ')
+          ..write('userId: $userId, ')
+          ..write('walletId: $walletId, ')
+          ..write('name: $name, ')
+          ..write('targetAmount: $targetAmount, ')
+          ..write('currentAmount: $currentAmount, ')
+          ..write('targetDate: $targetDate, ')
+          ..write('priority: $priority, ')
+          ..write('description: $description, ')
+          ..write('icon: $icon, ')
+          ..write('isPaused: $isPaused, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('deletedAt: $deletedAt, ')
+          ..write('syncStatus: $syncStatus, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$AppDatabase extends GeneratedDatabase {
   _$AppDatabase(QueryExecutor e) : super(e);
   $AppDatabaseManager get managers => $AppDatabaseManager(this);
@@ -2287,12 +3141,16 @@ abstract class _$AppDatabase extends GeneratedDatabase {
   late final $CategoriesTable categories = $CategoriesTable(this);
   late final $TransactionsTable transactions = $TransactionsTable(this);
   late final $BudgetsTable budgets = $BudgetsTable(this);
+  late final $SavingsGoalsTable savingsGoals = $SavingsGoalsTable(this);
   late final WalletsDao walletsDao = WalletsDao(this as AppDatabase);
   late final CategoriesDao categoriesDao = CategoriesDao(this as AppDatabase);
   late final TransactionsDao transactionsDao = TransactionsDao(
     this as AppDatabase,
   );
   late final BudgetsDao budgetsDao = BudgetsDao(this as AppDatabase);
+  late final SavingsGoalsDao savingsGoalsDao = SavingsGoalsDao(
+    this as AppDatabase,
+  );
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -2302,6 +3160,7 @@ abstract class _$AppDatabase extends GeneratedDatabase {
     categories,
     transactions,
     budgets,
+    savingsGoals,
   ];
 }
 
@@ -2347,6 +3206,24 @@ final class $$WalletsTableReferences
     ).filter((f) => f.walletId.id.sqlEquals($_itemColumn<String>('id')!));
 
     final cache = $_typedResult.readTableOrNull(_transactionsRefsTable($_db));
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: cache),
+    );
+  }
+
+  static MultiTypedResultKey<$SavingsGoalsTable, List<SavingsGoal>>
+  _savingsGoalsRefsTable(_$AppDatabase db) => MultiTypedResultKey.fromTable(
+    db.savingsGoals,
+    aliasName: $_aliasNameGenerator(db.wallets.id, db.savingsGoals.walletId),
+  );
+
+  $$SavingsGoalsTableProcessedTableManager get savingsGoalsRefs {
+    final manager = $$SavingsGoalsTableTableManager(
+      $_db,
+      $_db.savingsGoals,
+    ).filter((f) => f.walletId.id.sqlEquals($_itemColumn<String>('id')!));
+
+    final cache = $_typedResult.readTableOrNull(_savingsGoalsRefsTable($_db));
     return ProcessedTableManager(
       manager.$state.copyWith(prefetchedData: cache),
     );
@@ -2418,6 +3295,31 @@ class $$WalletsTableFilterComposer
           }) => $$TransactionsTableFilterComposer(
             $db: $db,
             $table: $db.transactions,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
+
+  Expression<bool> savingsGoalsRefs(
+    Expression<bool> Function($$SavingsGoalsTableFilterComposer f) f,
+  ) {
+    final $$SavingsGoalsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.savingsGoals,
+      getReferencedColumn: (t) => t.walletId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SavingsGoalsTableFilterComposer(
+            $db: $db,
+            $table: $db.savingsGoals,
             $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
             joinBuilder: joinBuilder,
             $removeJoinBuilderFromRootComposer:
@@ -2537,6 +3439,31 @@ class $$WalletsTableAnnotationComposer
     );
     return f(composer);
   }
+
+  Expression<T> savingsGoalsRefs<T extends Object>(
+    Expression<T> Function($$SavingsGoalsTableAnnotationComposer a) f,
+  ) {
+    final $$SavingsGoalsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.id,
+      referencedTable: $db.savingsGoals,
+      getReferencedColumn: (t) => t.walletId,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$SavingsGoalsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.savingsGoals,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return f(composer);
+  }
 }
 
 class $$WalletsTableTableManager
@@ -2552,7 +3479,7 @@ class $$WalletsTableTableManager
           $$WalletsTableUpdateCompanionBuilder,
           (Wallet, $$WalletsTableReferences),
           Wallet,
-          PrefetchHooks Function({bool transactionsRefs})
+          PrefetchHooks Function({bool transactionsRefs, bool savingsGoalsRefs})
         > {
   $$WalletsTableTableManager(_$AppDatabase db, $WalletsTable table)
     : super(
@@ -2617,35 +3544,63 @@ class $$WalletsTableTableManager
                 ),
               )
               .toList(),
-          prefetchHooksCallback: ({transactionsRefs = false}) {
-            return PrefetchHooks(
-              db: db,
-              explicitlyWatchedTables: [if (transactionsRefs) db.transactions],
-              addJoins: null,
-              getPrefetchedDataCallback: (items) async {
-                return [
-                  if (transactionsRefs)
-                    await $_getPrefetchedData<
-                      Wallet,
-                      $WalletsTable,
-                      Transaction
-                    >(
-                      currentTable: table,
-                      referencedTable: $$WalletsTableReferences
-                          ._transactionsRefsTable(db),
-                      managerFromTypedResult: (p0) => $$WalletsTableReferences(
-                        db,
-                        table,
-                        p0,
-                      ).transactionsRefs,
-                      referencedItemsForCurrentItem: (item, referencedItems) =>
-                          referencedItems.where((e) => e.walletId == item.id),
-                      typedResults: items,
-                    ),
-                ];
+          prefetchHooksCallback:
+              ({transactionsRefs = false, savingsGoalsRefs = false}) {
+                return PrefetchHooks(
+                  db: db,
+                  explicitlyWatchedTables: [
+                    if (transactionsRefs) db.transactions,
+                    if (savingsGoalsRefs) db.savingsGoals,
+                  ],
+                  addJoins: null,
+                  getPrefetchedDataCallback: (items) async {
+                    return [
+                      if (transactionsRefs)
+                        await $_getPrefetchedData<
+                          Wallet,
+                          $WalletsTable,
+                          Transaction
+                        >(
+                          currentTable: table,
+                          referencedTable: $$WalletsTableReferences
+                              ._transactionsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$WalletsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).transactionsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.walletId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                      if (savingsGoalsRefs)
+                        await $_getPrefetchedData<
+                          Wallet,
+                          $WalletsTable,
+                          SavingsGoal
+                        >(
+                          currentTable: table,
+                          referencedTable: $$WalletsTableReferences
+                              ._savingsGoalsRefsTable(db),
+                          managerFromTypedResult: (p0) =>
+                              $$WalletsTableReferences(
+                                db,
+                                table,
+                                p0,
+                              ).savingsGoalsRefs,
+                          referencedItemsForCurrentItem:
+                              (item, referencedItems) => referencedItems.where(
+                                (e) => e.walletId == item.id,
+                              ),
+                          typedResults: items,
+                        ),
+                    ];
+                  },
+                );
               },
-            );
-          },
         ),
       );
 }
@@ -2662,7 +3617,7 @@ typedef $$WalletsTableProcessedTableManager =
       $$WalletsTableUpdateCompanionBuilder,
       (Wallet, $$WalletsTableReferences),
       Wallet,
-      PrefetchHooks Function({bool transactionsRefs})
+      PrefetchHooks Function({bool transactionsRefs, bool savingsGoalsRefs})
     >;
 typedef $$CategoriesTableCreateCompanionBuilder =
     CategoriesCompanion Function({
@@ -4066,6 +5021,525 @@ typedef $$BudgetsTableProcessedTableManager =
       Budget,
       PrefetchHooks Function({bool categoryId})
     >;
+typedef $$SavingsGoalsTableCreateCompanionBuilder =
+    SavingsGoalsCompanion Function({
+      required String id,
+      Value<String?> userId,
+      required String walletId,
+      required String name,
+      required double targetAmount,
+      Value<double> currentAmount,
+      Value<DateTime?> targetDate,
+      Value<String> priority,
+      Value<String> description,
+      Value<String> icon,
+      Value<bool> isPaused,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> rowid,
+    });
+typedef $$SavingsGoalsTableUpdateCompanionBuilder =
+    SavingsGoalsCompanion Function({
+      Value<String> id,
+      Value<String?> userId,
+      Value<String> walletId,
+      Value<String> name,
+      Value<double> targetAmount,
+      Value<double> currentAmount,
+      Value<DateTime?> targetDate,
+      Value<String> priority,
+      Value<String> description,
+      Value<String> icon,
+      Value<bool> isPaused,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> deletedAt,
+      Value<String> syncStatus,
+      Value<int> rowid,
+    });
+
+final class $$SavingsGoalsTableReferences
+    extends BaseReferences<_$AppDatabase, $SavingsGoalsTable, SavingsGoal> {
+  $$SavingsGoalsTableReferences(super.$_db, super.$_table, super.$_typedResult);
+
+  static $WalletsTable _walletIdTable(_$AppDatabase db) =>
+      db.wallets.createAlias(
+        $_aliasNameGenerator(db.savingsGoals.walletId, db.wallets.id),
+      );
+
+  $$WalletsTableProcessedTableManager get walletId {
+    final $_column = $_itemColumn<String>('wallet_id')!;
+
+    final manager = $$WalletsTableTableManager(
+      $_db,
+      $_db.wallets,
+    ).filter((f) => f.id.sqlEquals($_column));
+    final item = $_typedResult.readTableOrNull(_walletIdTable($_db));
+    if (item == null) return manager;
+    return ProcessedTableManager(
+      manager.$state.copyWith(prefetchedData: [item]),
+    );
+  }
+}
+
+class $$SavingsGoalsTableFilterComposer
+    extends Composer<_$AppDatabase, $SavingsGoalsTable> {
+  $$SavingsGoalsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get targetAmount => $composableBuilder(
+    column: $table.targetAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get currentAmount => $composableBuilder(
+    column: $table.currentAmount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get targetDate => $composableBuilder(
+    column: $table.targetDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get icon => $composableBuilder(
+    column: $table.icon,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPaused => $composableBuilder(
+    column: $table.isPaused,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  $$WalletsTableFilterComposer get walletId {
+    final $$WalletsTableFilterComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.walletId,
+      referencedTable: $db.wallets,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WalletsTableFilterComposer(
+            $db: $db,
+            $table: $db.wallets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SavingsGoalsTableOrderingComposer
+    extends Composer<_$AppDatabase, $SavingsGoalsTable> {
+  $$SavingsGoalsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get name => $composableBuilder(
+    column: $table.name,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get targetAmount => $composableBuilder(
+    column: $table.targetAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get currentAmount => $composableBuilder(
+    column: $table.currentAmount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get targetDate => $composableBuilder(
+    column: $table.targetDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get icon => $composableBuilder(
+    column: $table.icon,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPaused => $composableBuilder(
+    column: $table.isPaused,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get deletedAt => $composableBuilder(
+    column: $table.deletedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  $$WalletsTableOrderingComposer get walletId {
+    final $$WalletsTableOrderingComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.walletId,
+      referencedTable: $db.wallets,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WalletsTableOrderingComposer(
+            $db: $db,
+            $table: $db.wallets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SavingsGoalsTableAnnotationComposer
+    extends Composer<_$AppDatabase, $SavingsGoalsTable> {
+  $$SavingsGoalsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get name =>
+      $composableBuilder(column: $table.name, builder: (column) => column);
+
+  GeneratedColumn<double> get targetAmount => $composableBuilder(
+    column: $table.targetAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get currentAmount => $composableBuilder(
+    column: $table.currentAmount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get targetDate => $composableBuilder(
+    column: $table.targetDate,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get icon =>
+      $composableBuilder(column: $table.icon, builder: (column) => column);
+
+  GeneratedColumn<bool> get isPaused =>
+      $composableBuilder(column: $table.isPaused, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get deletedAt =>
+      $composableBuilder(column: $table.deletedAt, builder: (column) => column);
+
+  GeneratedColumn<String> get syncStatus => $composableBuilder(
+    column: $table.syncStatus,
+    builder: (column) => column,
+  );
+
+  $$WalletsTableAnnotationComposer get walletId {
+    final $$WalletsTableAnnotationComposer composer = $composerBuilder(
+      composer: this,
+      getCurrentColumn: (t) => t.walletId,
+      referencedTable: $db.wallets,
+      getReferencedColumn: (t) => t.id,
+      builder:
+          (
+            joinBuilder, {
+            $addJoinBuilderToRootComposer,
+            $removeJoinBuilderFromRootComposer,
+          }) => $$WalletsTableAnnotationComposer(
+            $db: $db,
+            $table: $db.wallets,
+            $addJoinBuilderToRootComposer: $addJoinBuilderToRootComposer,
+            joinBuilder: joinBuilder,
+            $removeJoinBuilderFromRootComposer:
+                $removeJoinBuilderFromRootComposer,
+          ),
+    );
+    return composer;
+  }
+}
+
+class $$SavingsGoalsTableTableManager
+    extends
+        RootTableManager<
+          _$AppDatabase,
+          $SavingsGoalsTable,
+          SavingsGoal,
+          $$SavingsGoalsTableFilterComposer,
+          $$SavingsGoalsTableOrderingComposer,
+          $$SavingsGoalsTableAnnotationComposer,
+          $$SavingsGoalsTableCreateCompanionBuilder,
+          $$SavingsGoalsTableUpdateCompanionBuilder,
+          (SavingsGoal, $$SavingsGoalsTableReferences),
+          SavingsGoal,
+          PrefetchHooks Function({bool walletId})
+        > {
+  $$SavingsGoalsTableTableManager(_$AppDatabase db, $SavingsGoalsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SavingsGoalsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SavingsGoalsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SavingsGoalsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String?> userId = const Value.absent(),
+                Value<String> walletId = const Value.absent(),
+                Value<String> name = const Value.absent(),
+                Value<double> targetAmount = const Value.absent(),
+                Value<double> currentAmount = const Value.absent(),
+                Value<DateTime?> targetDate = const Value.absent(),
+                Value<String> priority = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> icon = const Value.absent(),
+                Value<bool> isPaused = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SavingsGoalsCompanion(
+                id: id,
+                userId: userId,
+                walletId: walletId,
+                name: name,
+                targetAmount: targetAmount,
+                currentAmount: currentAmount,
+                targetDate: targetDate,
+                priority: priority,
+                description: description,
+                icon: icon,
+                isPaused: isPaused,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                Value<String?> userId = const Value.absent(),
+                required String walletId,
+                required String name,
+                required double targetAmount,
+                Value<double> currentAmount = const Value.absent(),
+                Value<DateTime?> targetDate = const Value.absent(),
+                Value<String> priority = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> icon = const Value.absent(),
+                Value<bool> isPaused = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> deletedAt = const Value.absent(),
+                Value<String> syncStatus = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SavingsGoalsCompanion.insert(
+                id: id,
+                userId: userId,
+                walletId: walletId,
+                name: name,
+                targetAmount: targetAmount,
+                currentAmount: currentAmount,
+                targetDate: targetDate,
+                priority: priority,
+                description: description,
+                icon: icon,
+                isPaused: isPaused,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                deletedAt: deletedAt,
+                syncStatus: syncStatus,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map(
+                (e) => (
+                  e.readTable(table),
+                  $$SavingsGoalsTableReferences(db, table, e),
+                ),
+              )
+              .toList(),
+          prefetchHooksCallback: ({walletId = false}) {
+            return PrefetchHooks(
+              db: db,
+              explicitlyWatchedTables: [],
+              addJoins:
+                  <
+                    T extends TableManagerState<
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic,
+                      dynamic
+                    >
+                  >(state) {
+                    if (walletId) {
+                      state =
+                          state.withJoin(
+                                currentTable: table,
+                                currentColumn: table.walletId,
+                                referencedTable: $$SavingsGoalsTableReferences
+                                    ._walletIdTable(db),
+                                referencedColumn: $$SavingsGoalsTableReferences
+                                    ._walletIdTable(db)
+                                    .id,
+                              )
+                              as T;
+                    }
+
+                    return state;
+                  },
+              getPrefetchedDataCallback: (items) async {
+                return [];
+              },
+            );
+          },
+        ),
+      );
+}
+
+typedef $$SavingsGoalsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$AppDatabase,
+      $SavingsGoalsTable,
+      SavingsGoal,
+      $$SavingsGoalsTableFilterComposer,
+      $$SavingsGoalsTableOrderingComposer,
+      $$SavingsGoalsTableAnnotationComposer,
+      $$SavingsGoalsTableCreateCompanionBuilder,
+      $$SavingsGoalsTableUpdateCompanionBuilder,
+      (SavingsGoal, $$SavingsGoalsTableReferences),
+      SavingsGoal,
+      PrefetchHooks Function({bool walletId})
+    >;
 
 class $AppDatabaseManager {
   final _$AppDatabase _db;
@@ -4078,4 +5552,6 @@ class $AppDatabaseManager {
       $$TransactionsTableTableManager(_db, _db.transactions);
   $$BudgetsTableTableManager get budgets =>
       $$BudgetsTableTableManager(_db, _db.budgets);
+  $$SavingsGoalsTableTableManager get savingsGoals =>
+      $$SavingsGoalsTableTableManager(_db, _db.savingsGoals);
 }

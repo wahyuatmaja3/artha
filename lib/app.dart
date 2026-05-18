@@ -6,6 +6,7 @@ import '../../features/transactions/transactions_screen.dart';
 import '../../features/transactions/add_transaction_screen.dart';
 import '../../features/budget/budget_screen.dart';
 import '../../features/settings/settings_screen.dart';
+import '../../features/savings_goals/savings_goals_screen.dart';
 
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
@@ -20,6 +21,7 @@ class _AppShellState extends ConsumerState<AppShell> {
   final List<Widget> _screens = [
     const DashboardScreen(),
     const TransactionsScreen(),
+    const SavingsGoalsScreen(),
     const BudgetScreen(),
     const SettingsScreen(),
   ];
@@ -27,6 +29,7 @@ class _AppShellState extends ConsumerState<AppShell> {
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final showAddTransactionFab = _currentIndex == 0 || _currentIndex == 1;
 
     return Scaffold(
       body: _screens[_currentIndex],
@@ -65,6 +68,11 @@ class _AppShellState extends ConsumerState<AppShell> {
                   label: 'Catatan',
                 ),
                 NavigationDestination(
+                  icon: Icon(FontAwesomeIcons.bullseye),
+                  selectedIcon: Icon(FontAwesomeIcons.bullseye),
+                  label: 'Goals',
+                ),
+                NavigationDestination(
                   icon: Icon(FontAwesomeIcons.chartPie),
                   selectedIcon: Icon(FontAwesomeIcons.chartPie),
                   label: 'Budget',
@@ -79,17 +87,19 @@ class _AppShellState extends ConsumerState<AppShell> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const AddTransactionScreen(),
-            ),
-          );
-        },
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        child: const FaIcon(FontAwesomeIcons.plus),
-      ),
+      floatingActionButton: showAddTransactionFab
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const AddTransactionScreen(),
+                  ),
+                );
+              },
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+              child: const FaIcon(FontAwesomeIcons.plus),
+            )
+          : null,
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }

@@ -33,7 +33,7 @@ class BudgetScreen extends ConsumerWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     DropdownButtonFormField<String>(
-                      value: selectedCategoryId,
+                      initialValue: selectedCategoryId,
                       decoration: const InputDecoration(labelText: 'Kategori'),
                       items: expenseCategories
                           .map(

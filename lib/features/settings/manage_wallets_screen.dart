@@ -32,14 +32,24 @@ class ManageWalletsScreen extends ConsumerWidget {
     final nameController = TextEditingController();
     final amountController = TextEditingController(text: '0');
 
-    await showDialog<void>(
+    await showModalBottomSheet<void>(
       context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Tambah Wallet'),
-          content: Column(
+        return Padding(
+          padding: EdgeInsets.fromLTRB(16, 8, 16, MediaQuery.of(context).viewInsets.bottom + 16),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+              const Align(
+                alignment: Alignment.centerLeft,
+                child: Text('Tambah Wallet', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+              ),
+              const SizedBox(height: 12),
               TextField(
                 controller: nameController,
                 decoration: const InputDecoration(labelText: 'Nama wallet'),
@@ -51,32 +61,32 @@ class ManageWalletsScreen extends ConsumerWidget {
                 decoration: const InputDecoration(labelText: 'Saldo awal'),
                 keyboardType: const TextInputType.numberWithOptions(decimal: true),
               ),
+              const SizedBox(height: 16),
+              Row(
+                children: [
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Batal'),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: FilledButton(
+                      onPressed: () async {
+                        final name = nameController.text.trim();
+                        final initialBalance = double.tryParse(amountController.text.trim()) ?? 0;
+                        if (name.isEmpty) return;
+                        await ref.read(walletsRepositoryProvider).addWallet(name, initialBalance);
+                        if (context.mounted) Navigator.pop(context);
+                      },
+                      child: const Text('Simpan'),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Batal'),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final name = nameController.text.trim();
-                final initialBalance =
-                    double.tryParse(amountController.text.trim()) ?? 0;
-
-                if (name.isEmpty) return;
-
-                await ref
-                    .read(walletsRepositoryProvider)
-                    .addWallet(name, initialBalance);
-
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
-              },
-              child: const Text('Simpan'),
-            ),
-          ],
         );
       },
     );
@@ -124,21 +134,26 @@ class _WalletsList extends ConsumerWidget {
     WidgetRef ref,
     WalletModel wallet,
   ) async {
-    final shouldDelete = await showDialog<bool>(
+    final shouldDelete = await showModalBottomSheet<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Hapus wallet?'),
-            content: Text('Wallet "${wallet.name}" akan dihapus.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Batal'),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Hapus'),
-              ),
-            ],
+          showDragHandle: true,
+          builder: (context) => Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Hapus wallet?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 8),
+                Text('Wallet "${wallet.name}" akan dihapus.'),
+                const SizedBox(height: 16),
+                Row(children: [
+                  Expanded(child: OutlinedButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal'))),
+                  const SizedBox(width: 10),
+                  Expanded(child: FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Hapus'))),
+                ]),
+              ],
+            ),
           ),
         ) ??
         false;

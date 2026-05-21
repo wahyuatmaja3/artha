@@ -16,8 +16,13 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
   DateTime _selectedMonth = DateTime(DateTime.now().year, DateTime.now().month);
 
   Future<void> _pickMonthYear(BuildContext context) async {
-    final picked = await showDialog<DateTime>(
+    final picked = await showModalBottomSheet<DateTime>(
       context: context,
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (dialogContext) {
         var tempYear = _selectedMonth.year;
         var tempMonth = _selectedMonth.month;
@@ -39,13 +44,16 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
 
         return StatefulBuilder(
           builder: (context, setSheetState) {
-            return AlertDialog(
-              title: const Text('Pilih Bulan'),
-              content: SizedBox(
-                width: 320,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
+            return Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text('Pilih Bulan', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+                  ),
+                  const SizedBox(height: 12),
                     DropdownButtonFormField<int>(
                       initialValue: tempYear,
                       decoration: const InputDecoration(labelText: 'Tahun'),
@@ -75,21 +83,26 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                         );
                       }),
                     ),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('Batal'),
-                ),
-                FilledButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(
-                    DateTime(tempYear, tempMonth),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(),
+                          child: const Text('Batal'),
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: () => Navigator.of(dialogContext).pop(DateTime(tempYear, tempMonth)),
+                          child: const Text('Pilih'),
+                        ),
+                      ),
+                    ],
                   ),
-                  child: const Text('OK'),
-                ),
-              ],
+                ],
+              ),
             );
           },
         );

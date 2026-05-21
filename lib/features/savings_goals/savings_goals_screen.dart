@@ -212,38 +212,75 @@ class _GoalCard extends ConsumerWidget {
   Future<void> _showContributionDialog(BuildContext context, WidgetRef ref, SavingsGoalModel goal, bool add) async {
     final controller = TextEditingController();
     final noteController = TextEditingController();
-    await showDialog<void>(
+    final presets = [50000.0, 100000.0, 250000.0, 500000.0, 1000000.0];
+    await showModalBottomSheet<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(add ? 'Tambah dana' : 'Ambil dana'),
-        content: Column(
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) => Padding(
+        padding: EdgeInsets.fromLTRB(16, 8, 16, MediaQuery.of(sheetContext).viewInsets.bottom + 16),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(add ? 'Tambah Dana Goal' : 'Kurangi Dana Goal', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 8),
+            Text(
+              goal.name,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: presets.map((amount) {
+                return ActionChip(
+                  label: Text(CurrencyUtils.formatRupiah(amount)),
+                  onPressed: () => controller.text = amount.toStringAsFixed(0),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 12),
             TextField(
               controller: controller,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(labelText: 'Nominal'),
+              decoration: const InputDecoration(labelText: 'Nominal', prefixText: 'Rp '),
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: 10),
             TextField(
               controller: noteController,
               decoration: const InputDecoration(labelText: 'Catatan (opsional)'),
             ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    child: const Text('Batal'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: () async {
+                      final amount = double.tryParse(controller.text.trim());
+                      if (amount == null || amount <= 0) return;
+                      await ref.read(savingsGoalsRepositoryProvider).addContribution(goal.id, add ? amount : -amount);
+                      if (!context.mounted) return;
+                      Navigator.of(sheetContext).pop();
+                    },
+                    child: Text(add ? 'Tambah' : 'Kurangi'),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text('Batal')),
-          FilledButton(
-            onPressed: () async {
-              final amount = double.tryParse(controller.text.trim());
-              if (amount == null || amount <= 0) return;
-              await ref.read(savingsGoalsRepositoryProvider).addContribution(goal.id, add ? amount : -amount);
-              if (!context.mounted) return;
-              Navigator.of(dialogContext).pop();
-            },
-            child: const Text('Simpan'),
-          ),
-        ],
       ),
     );
   }

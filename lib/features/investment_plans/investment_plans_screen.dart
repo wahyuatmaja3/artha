@@ -259,32 +259,69 @@ class _PlanCard extends ConsumerWidget {
 
   Future<void> _showContributionDialog(BuildContext context, WidgetRef ref, bool add) async {
     final controller = TextEditingController();
-    await showDialog<void>(
+    final presets = [100000.0, 250000.0, 500000.0, 1000000.0, 2500000.0];
+    await showModalBottomSheet<void>(
       context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: Text(add ? 'Tambah investasi' : 'Tarik dana'),
-        content: TextField(
-          controller: controller,
-          keyboardType: TextInputType.number,
-          decoration: const InputDecoration(
-            labelText: 'Nominal',
-            hintText: 'contoh: 250000',
-            prefixText: 'Rp ',
-          ),
+      isScrollControlled: true,
+      showDragHandle: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (sheetContext) => Padding(
+        padding: EdgeInsets.fromLTRB(16, 8, 16, MediaQuery.of(sheetContext).viewInsets.bottom + 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(add ? 'Tambah Investasi' : 'Tarik Investasi', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 14),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: presets.map((amount) {
+                return ActionChip(
+                  label: Text(CurrencyUtils.formatRupiah(amount)),
+                  onPressed: () => controller.text = amount.toStringAsFixed(0),
+                );
+              }).toList(),
+            ),
+            const SizedBox(height: 12),
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.number,
+              decoration: const InputDecoration(
+                labelText: 'Nominal',
+                hintText: 'contoh: 250000',
+                prefixText: 'Rp ',
+              ),
+            ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: OutlinedButton(
+                    onPressed: () => Navigator.of(sheetContext).pop(),
+                    child: const Text('Batal'),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: () async {
+                      final amount = _parseCurrencyAmount(controller.text);
+                      if (amount == null || amount <= 0) return;
+                      await ref.read(investmentPlansRepositoryProvider).addContribution(plan.id, add ? amount : -amount);
+                      if (!context.mounted) return;
+                      Navigator.of(sheetContext).pop();
+                    },
+                    child: Text(add ? 'Tambah' : 'Tarik'),
+                  ),
+                ),
+              ],
+            ),
+          ],
         ),
-        actions: [
-          TextButton(onPressed: () => Navigator.of(dialogContext).pop(), child: const Text('Batal')),
-          FilledButton(
-            onPressed: () async {
-              final amount = _parseCurrencyAmount(controller.text);
-              if (amount == null || amount <= 0) return;
-              await ref.read(investmentPlansRepositoryProvider).addContribution(plan.id, add ? amount : -amount);
-              if (!context.mounted) return;
-              Navigator.of(dialogContext).pop();
-            },
-            child: const Text('Simpan'),
-          ),
-        ],
       ),
     );
   }

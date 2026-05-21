@@ -66,13 +66,23 @@ class _ManageCategoriesScreenState extends ConsumerState<ManageCategoriesScreen>
     final nameController = TextEditingController();
     final iconController = TextEditingController();
 
-    await showDialog<void>(
+    await showModalBottomSheet<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Tambah Kategori'),
-        content: Column(
+      isScrollControlled: true,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.fromLTRB(16, 8, 16, MediaQuery.of(context).viewInsets.bottom + 16),
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            const Align(
+              alignment: Alignment.centerLeft,
+              child: Text('Tambah Kategori', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+            ),
+            const SizedBox(height: 12),
             TextField(
               controller: nameController,
               decoration: const InputDecoration(labelText: 'Nama kategori'),
@@ -85,33 +95,27 @@ class _ManageCategoriesScreenState extends ConsumerState<ManageCategoriesScreen>
                 hintText: 'Contoh: 🍽️',
               ),
             ),
+            const SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(child: OutlinedButton(onPressed: () => Navigator.pop(context), child: const Text('Batal'))),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: FilledButton(
+                    onPressed: () async {
+                      final name = nameController.text.trim();
+                      final icon = iconController.text.trim().isEmpty ? '📁' : iconController.text.trim();
+                      if (name.isEmpty) return;
+                      await ref.read(categoriesRepositoryProvider).addCategory(name, _selectedType, icon);
+                      if (context.mounted) Navigator.pop(context);
+                    },
+                    child: const Text('Simpan'),
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Batal'),
-          ),
-          FilledButton(
-            onPressed: () async {
-              final name = nameController.text.trim();
-              final icon = iconController.text.trim().isEmpty
-                  ? '📁'
-                  : iconController.text.trim();
-
-              if (name.isEmpty) return;
-
-              await ref
-                  .read(categoriesRepositoryProvider)
-                  .addCategory(name, _selectedType, icon);
-
-              if (context.mounted) {
-                Navigator.pop(context);
-              }
-            },
-            child: const Text('Simpan'),
-          ),
-        ],
       ),
     );
   }
@@ -147,21 +151,26 @@ class _CategoryList extends StatelessWidget {
   }
 
   Future<void> _confirmDelete(BuildContext context, CategoryModel category) async {
-    final shouldDelete = await showDialog<bool>(
+    final shouldDelete = await showModalBottomSheet<bool>(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('Hapus kategori?'),
-            content: Text('Kategori "${category.name}" akan dihapus.'),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context, false),
-                child: const Text('Batal'),
-              ),
-              FilledButton(
-                onPressed: () => Navigator.pop(context, true),
-                child: const Text('Hapus'),
-              ),
-            ],
+          showDragHandle: true,
+          builder: (context) => Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('Hapus kategori?', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
+                const SizedBox(height: 8),
+                Text('Kategori "${category.name}" akan dihapus.'),
+                const SizedBox(height: 16),
+                Row(children: [
+                  Expanded(child: OutlinedButton(onPressed: () => Navigator.pop(context, false), child: const Text('Batal'))),
+                  const SizedBox(width: 10),
+                  Expanded(child: FilledButton(onPressed: () => Navigator.pop(context, true), child: const Text('Hapus'))),
+                ]),
+              ],
+            ),
           ),
         ) ??
         false;

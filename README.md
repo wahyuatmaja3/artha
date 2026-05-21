@@ -53,21 +53,6 @@ flutter run
 
 ## Screenshots
 
-Saat ini repository belum menyimpan screenshot layar aplikasi terbaru.
-
-Template lokasi screenshot (silakan isi file PNG/JPG):
-- `docs/screenshots/dashboard.png`
-- `docs/screenshots/transactions.png`
-- `docs/screenshots/filter-sheet.png`
-- `docs/screenshots/add-transaction.png`
-- `docs/screenshots/budget.png`
-- `docs/screenshots/savings-goals.png`
-- `docs/screenshots/investment-plans.png`
-- `docs/screenshots/settings.png`
-
-Setelah screenshot ditambahkan, gunakan markdown berikut:
-
-```md
 ![Dashboard](docs/screenshots/dashboard.png)
 ![Transactions](docs/screenshots/transactions.png)
 ![Filter Sheet](docs/screenshots/filter-sheet.png)

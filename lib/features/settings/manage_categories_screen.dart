@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../data/repositories/categories_repository.dart';
 import '../../domain/models/models.dart';
+import '../../core/ui/neo_text_field.dart';
 
 class ManageCategoriesScreen extends ConsumerStatefulWidget {
   const ManageCategoriesScreen({super.key});
@@ -83,16 +84,20 @@ class _ManageCategoriesScreenState extends ConsumerState<ManageCategoriesScreen>
               child: Text('Tambah Kategori', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
             ),
             const SizedBox(height: 12),
-            TextField(
-              controller: nameController,
-              decoration: const InputDecoration(labelText: 'Nama kategori'),
+            NeoTextFieldFrame(
+              child: TextField(
+                controller: nameController,
+                decoration: const InputDecoration(labelText: 'Nama kategori'),
+              ),
             ),
             const SizedBox(height: 12),
-            TextField(
-              controller: iconController,
-              decoration: const InputDecoration(
-                labelText: 'Ikon (emoji)',
-                hintText: 'Contoh: 🍽️',
+            NeoTextFieldFrame(
+              child: TextField(
+                controller: iconController,
+                decoration: const InputDecoration(
+                  labelText: 'Ikon (emoji)',
+                  hintText: 'Contoh: 🍽️',
+                ),
               ),
             ),
             const SizedBox(height: 16),

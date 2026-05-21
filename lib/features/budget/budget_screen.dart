@@ -6,6 +6,7 @@ import '../../data/repositories/categories_repository.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
 import '../../core/ui/neo_widgets.dart';
+import '../../core/ui/neo_text_field.dart';
 import '../../domain/models/models.dart';
 
 class BudgetScreen extends ConsumerWidget {
@@ -57,12 +58,14 @@ class BudgetScreen extends ConsumerWidget {
                       },
                     ),
                     const SizedBox(height: 16),
-                    TextFormField(
-                      controller: limitController,
-                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: const InputDecoration(
-                        labelText: 'Limit Budget',
-                        hintText: 'contoh: 1500000',
+                    NeoTextFieldFrame(
+                      child: TextFormField(
+                        controller: limitController,
+                        keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                        decoration: const InputDecoration(
+                          labelText: 'Limit Budget',
+                          hintText: 'contoh: 1500000',
+                        ),
                       ),
                     ),
                     const SizedBox(height: 16),

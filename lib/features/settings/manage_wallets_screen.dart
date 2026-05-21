@@ -5,6 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../data/repositories/wallets_repository.dart';
 import '../../domain/models/models.dart';
+import '../../core/ui/neo_text_field.dart';
 
 class ManageWalletsScreen extends ConsumerWidget {
   const ManageWalletsScreen({super.key});
@@ -50,16 +51,20 @@ class ManageWalletsScreen extends ConsumerWidget {
                 child: Text('Tambah Wallet', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
               ),
               const SizedBox(height: 12),
-              TextField(
-                controller: nameController,
-                decoration: const InputDecoration(labelText: 'Nama wallet'),
-                textInputAction: TextInputAction.next,
+              NeoTextFieldFrame(
+                child: TextField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Nama wallet'),
+                  textInputAction: TextInputAction.next,
+                ),
               ),
               const SizedBox(height: 12),
-              TextField(
-                controller: amountController,
-                decoration: const InputDecoration(labelText: 'Saldo awal'),
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+              NeoTextFieldFrame(
+                child: TextField(
+                  controller: amountController,
+                  decoration: const InputDecoration(labelText: 'Saldo awal'),
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                ),
               ),
               const SizedBox(height: 16),
               Row(

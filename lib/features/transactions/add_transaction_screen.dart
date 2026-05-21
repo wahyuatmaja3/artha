@@ -8,6 +8,7 @@ import '../../data/repositories/wallets_repository.dart';
 import '../../data/repositories/categories_repository.dart';
 import '../../data/repositories/budgets_repository.dart';
 import '../../domain/models/models.dart';
+import '../../core/ui/neo_text_field.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
@@ -380,18 +381,16 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
             ],
           ),
           const SizedBox(height: 10),
-          TextField(
-            controller: _noteController,
-            onChanged: (value) => _note = value,
-            minLines: 1,
-            maxLines: 1,
-            decoration: InputDecoration(
-              hintText: 'Catatan (opsional)',
-              isDense: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(12),
+          NeoTextFieldFrame(
+            child: TextField(
+              controller: _noteController,
+              onChanged: (value) => _note = value,
+              minLines: 1,
+              maxLines: 1,
+              decoration: const InputDecoration(
+                hintText: 'Catatan (opsional)',
+                isDense: true,
               ),
-              contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             ),
           ),
           if (_isRecurring) ...[

@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../core/utils/formatters.dart';
 import '../../core/ui/neo_widgets.dart';
+import '../../core/ui/neo_text_field.dart';
 import '../../data/repositories/savings_goals_repository.dart';
 import '../../data/repositories/wallets_repository.dart';
 import '../../domain/models/models.dart';
@@ -75,12 +76,14 @@ class SavingsGoalsScreen extends ConsumerWidget {
               children: [
                 Text('Tambah Goal', style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 16),
-                TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Nama target', hintText: 'contoh: Dana Darurat')),
+                NeoTextFieldFrame(child: TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Nama target', hintText: 'contoh: Dana Darurat'))),
                 const SizedBox(height: 12),
-                TextField(
-                  controller: targetController,
-                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                  decoration: const InputDecoration(labelText: 'Target nominal', hintText: 'contoh: 10000000'),
+                NeoTextFieldFrame(
+                  child: TextField(
+                    controller: targetController,
+                    keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                    decoration: const InputDecoration(labelText: 'Target nominal', hintText: 'contoh: 10000000'),
+                  ),
                 ),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
@@ -245,16 +248,16 @@ class _GoalCard extends ConsumerWidget {
               }).toList(),
             ),
             const SizedBox(height: 12),
-            TextField(
+            NeoTextFieldFrame(child: TextField(
               controller: controller,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
               decoration: const InputDecoration(labelText: 'Nominal', prefixText: 'Rp '),
-            ),
+            )),
             const SizedBox(height: 10),
-            TextField(
+            NeoTextFieldFrame(child: TextField(
               controller: noteController,
               decoration: const InputDecoration(labelText: 'Catatan (opsional)'),
-            ),
+            )),
             const SizedBox(height: 16),
             Row(
               children: [

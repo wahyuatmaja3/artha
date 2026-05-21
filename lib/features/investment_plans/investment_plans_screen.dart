@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../core/utils/formatters.dart';
 import '../../core/ui/neo_widgets.dart';
+import '../../core/ui/neo_text_field.dart';
 import '../../data/repositories/investment_plans_repository.dart';
 import '../../data/repositories/wallets_repository.dart';
 import '../../domain/models/models.dart';
@@ -75,7 +76,7 @@ class InvestmentPlansScreen extends ConsumerWidget {
               children: [
                 Text('Tambah Investment Plan', style: Theme.of(context).textTheme.titleLarge),
                 const SizedBox(height: 16),
-                TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Nama plan')),
+                NeoTextFieldFrame(child: TextField(controller: nameController, decoration: const InputDecoration(labelText: 'Nama plan'))),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: type,
@@ -100,7 +101,7 @@ class InvestmentPlansScreen extends ConsumerWidget {
                   },
                 ),
                 const SizedBox(height: 12),
-                TextField(
+                NeoTextFieldFrame(child: TextField(
                   controller: targetController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
@@ -108,9 +109,9 @@ class InvestmentPlansScreen extends ConsumerWidget {
                     hintText: 'contoh: 10000000',
                     prefixText: 'Rp ',
                   ),
-                ),
+                )),
                 const SizedBox(height: 12),
-                TextField(
+                NeoTextFieldFrame(child: TextField(
                   controller: allocationController,
                   keyboardType: TextInputType.number,
                   decoration: const InputDecoration(
@@ -118,7 +119,7 @@ class InvestmentPlansScreen extends ConsumerWidget {
                     hintText: 'contoh: 500000',
                     prefixText: 'Rp ',
                   ),
-                ),
+                )),
                 const SizedBox(height: 12),
                 DropdownButtonFormField<String>(
                   initialValue: frequency,
@@ -151,7 +152,7 @@ class InvestmentPlansScreen extends ConsumerWidget {
                   value: autoInvestEnabled,
                   onChanged: (value) => setStateDialog(() => autoInvestEnabled = value),
                 ),
-                TextField(controller: noteController, decoration: const InputDecoration(labelText: 'Catatan')),
+                NeoTextFieldFrame(child: TextField(controller: noteController, decoration: const InputDecoration(labelText: 'Catatan'))),
                 const SizedBox(height: 16),
                 Row(
                   children: [
@@ -287,7 +288,7 @@ class _PlanCard extends ConsumerWidget {
               }).toList(),
             ),
             const SizedBox(height: 12),
-            TextField(
+            NeoTextFieldFrame(child: TextField(
               controller: controller,
               keyboardType: TextInputType.number,
               decoration: const InputDecoration(
@@ -295,7 +296,7 @@ class _PlanCard extends ConsumerWidget {
                 hintText: 'contoh: 250000',
                 prefixText: 'Rp ',
               ),
-            ),
+            )),
             const SizedBox(height: 16),
             Row(
               children: [

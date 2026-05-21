@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/theme/theme_provider.dart';
+import '../../core/ui/neo_widgets.dart';
 import 'manage_wallets_screen.dart';
 import 'manage_categories_screen.dart';
 
@@ -41,29 +42,29 @@ class SettingsScreen extends ConsumerWidget {
         title: const Text('Settings'),
       ),
       body: ListView(
+        padding: const EdgeInsets.all(16),
         children: [
-          const ListTile(
-            title: Text('Account', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-          ),
-          ListTile(
+          const NeoSectionTitle('Account'),
+          const SizedBox(height: 10),
+          NeoCard(child: ListTile(
             leading: const FaIcon(FontAwesomeIcons.user),
             title: const Text('Profile'),
             trailing: const FaIcon(FontAwesomeIcons.chevronRight, size: 14),
             onTap: () {},
-          ),
-          const Divider(),
-          const ListTile(
-            title: Text('Preferences', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.grey)),
-          ),
-          SwitchListTile(
+          )),
+          const SizedBox(height: 18),
+          const NeoSectionTitle('Preferences'),
+          const SizedBox(height: 10),
+          NeoCard(child: SwitchListTile(
             secondary: const FaIcon(FontAwesomeIcons.moon),
             title: const Text('Dark Mode'),
             value: isDark,
             onChanged: (val) {
               ref.read(themeModeProvider.notifier).toggle(val);
             },
-          ),
-          ListTile(
+          )),
+          const SizedBox(height: 10),
+          NeoCard(child: ListTile(
             leading: const FaIcon(FontAwesomeIcons.palette),
             title: const Text('Theme Preset'),
             subtitle: Text(_themePresetLabel(themePreset)),
@@ -109,8 +110,9 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               ],
             ),
-          ),
-          ListTile(
+          )),
+          const SizedBox(height: 10),
+          NeoCard(child: ListTile(
             leading: const FaIcon(FontAwesomeIcons.wallet),
             title: const Text('Manage Wallets'),
             trailing: const FaIcon(FontAwesomeIcons.chevronRight, size: 14),
@@ -121,8 +123,9 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               );
             },
-          ),
-          ListTile(
+          )),
+          const SizedBox(height: 10),
+          NeoCard(child: ListTile(
             leading: const Icon(Icons.category),
             title: const Text('Manage Categories'),
             trailing: const FaIcon(FontAwesomeIcons.chevronRight, size: 14),
@@ -133,7 +136,7 @@ class SettingsScreen extends ConsumerWidget {
                 ),
               );
             },
-          ),
+          )),
         ],
       ),
     );

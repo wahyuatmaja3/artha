@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
+import '../../core/ui/neo_widgets.dart';
 
 class DashboardScreen extends ConsumerStatefulWidget {
   const DashboardScreen({super.key});
@@ -125,10 +126,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
           children: [
             _buildTotalBalanceCard(context, transactionsAsyncValue, monthStart, monthEnd),
             const SizedBox(height: 24),
-            Text(
-              'Recent Transactions',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            const NeoSectionTitle('Recent Transactions'),
             const SizedBox(height: 16),
             _buildRecentTransactions(
               context,
@@ -148,9 +146,7 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     DateTime monthStart,
     DateTime monthEnd,
   ) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    return NeoCard(
       child: Container(
         width: double.infinity,
         padding: const EdgeInsets.all(24.0),
@@ -247,7 +243,9 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 tx.categoryType ==
                 'expense'; // Since drift currently doesn't store type locally directly on tx
 
-            return ListTile(
+             return NeoCard(
+               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+               child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: isExpense
                     ? Colors.red.shade100
@@ -268,16 +266,22 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              onLongPress: () async {
-                await ref
-                    .read(transactionsRepositoryProvider)
-                    .deleteTransaction(tx.id, tx.walletId, tx.amount, tx.categoryType ?? 'expense');
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Transaksi dihapus')),
-                );
-              },
-            );
+                  onLongPress: () async {
+                    await ref
+                        .read(transactionsRepositoryProvider)
+                        .deleteTransaction(
+                          tx.id,
+                          tx.walletId,
+                          tx.amount,
+                          tx.categoryType ?? 'expense',
+                        );
+                    if (!context.mounted) return;
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Transaksi dihapus')),
+                    );
+                  },
+                ),
+              );
           },
         );
       },

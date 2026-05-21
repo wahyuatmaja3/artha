@@ -4,6 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
+import '../../core/ui/neo_widgets.dart';
 
 class TransactionsScreen extends ConsumerWidget {
   const TransactionsScreen({super.key});
@@ -50,7 +51,9 @@ class TransactionsScreen extends ConsumerWidget {
                   ? '${DateUtilsApp.formatDate(tx.date)} • ${tx.note}'
                   : DateUtilsApp.formatDate(tx.date);
               
-              return ListTile(
+              return NeoCard(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                child: ListTile(
                 leading: CircleAvatar(
                   backgroundColor: isExpense ? Colors.red.shade100 : Colors.green.shade100,
                   child: FaIcon(
@@ -72,7 +75,7 @@ class TransactionsScreen extends ConsumerWidget {
                 onTap: () {
                   // View/Edit transaction details
                 },
-              );
+              ));
             },
           );
         },

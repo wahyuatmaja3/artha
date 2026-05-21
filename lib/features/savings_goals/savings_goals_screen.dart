@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../core/utils/formatters.dart';
+import '../../core/ui/neo_widgets.dart';
 import '../../data/repositories/savings_goals_repository.dart';
 import '../../data/repositories/wallets_repository.dart';
 import '../../domain/models/models.dart';
@@ -157,9 +158,9 @@ class _GoalCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final progressColor = goal.progress >= 1 ? Colors.green : Theme.of(context).colorScheme.primary;
-    return Card(
-      margin: const EdgeInsets.only(bottom: 14),
-      child: Padding(
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: NeoCard(
         padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

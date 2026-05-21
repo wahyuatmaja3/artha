@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'neo_tokens.dart';
 
 enum ThemePreset {
   artha,
@@ -12,50 +13,53 @@ enum ThemePreset {
 }
 
 class AppTheme {
-  // Brand Colors
-  static const Color primaryColor = Color(0xFF2E7D32); // Green
-  static const Color primaryLight = Color(0xFF60AD5E);
-  static const Color primaryDark = Color(0xFF005005);
+  static ThemeData lightTheme = _buildNeoTheme(brightness: Brightness.light);
+  static ThemeData darkTheme = _buildNeoTheme(brightness: Brightness.dark);
 
-  static const Color errorColor = Color(0xFFD32F2F); // Red
-  static const Color backgroundLight = Color(0xFFF5F5F5);
-  static const Color backgroundDark = Color(0xFF121212);
+  static ThemeData _buildNeoTheme({required Brightness brightness}) {
+    final isDark = brightness == Brightness.dark;
+    final scheme = ColorScheme(
+      brightness: brightness,
+      primary: isDark ? NeoTokens.darkAccent : NeoTokens.lightAccent,
+      onPrimary: isDark ? NeoTokens.darkInk : NeoTokens.lightInk,
+      secondary: isDark ? const Color(0xFF4CC9F0) : const Color(0xFF1777B6),
+      onSecondary: isDark ? NeoTokens.darkInk : Colors.white,
+      error: const Color(0xFFE53935),
+      onError: Colors.white,
+      surface: isDark ? NeoTokens.darkSurface : NeoTokens.lightSurface,
+      onSurface: isDark ? NeoTokens.darkInk : NeoTokens.lightInk,
+    );
 
-  static ThemeData lightTheme = ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryColor,
-      brightness: Brightness.light,
-      error: errorColor,
-    ),
-    appBarTheme: const AppBarTheme(
-      backgroundColor: primaryColor,
-      foregroundColor: Colors.white,
-      elevation: 0,
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: primaryColor,
-      foregroundColor: Colors.white,
-    ),
-  );
-
-  static ThemeData darkTheme = ThemeData(
-    useMaterial3: true,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: primaryColor,
-      brightness: Brightness.dark,
-      error: errorColor,
-    ),
-    appBarTheme: AppBarTheme(
-      backgroundColor: backgroundDark,
-      foregroundColor: Colors.white,
-      elevation: 0,
-    ),
-    floatingActionButtonTheme: const FloatingActionButtonThemeData(
-      backgroundColor: primaryColor,
-      foregroundColor: Colors.white,
-    ),
-  );
+    final base = ThemeData(
+      useMaterial3: true,
+      colorScheme: scheme,
+      scaffoldBackgroundColor: isDark ? NeoTokens.darkBg : NeoTokens.lightBg,
+      fontFamily: 'Trebuchet MS',
+      appBarTheme: AppBarTheme(
+        backgroundColor: Colors.transparent,
+        foregroundColor: scheme.onSurface,
+        elevation: 0,
+        centerTitle: false,
+      ),
+      cardTheme: CardThemeData(
+        color: scheme.surface,
+        elevation: 0,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(NeoTokens.radiusMd),
+          side: BorderSide(color: scheme.onSurface, width: 2),
+        ),
+      ),
+      floatingActionButtonTheme: FloatingActionButtonThemeData(
+        backgroundColor: scheme.primary,
+        foregroundColor: scheme.onPrimary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(NeoTokens.radiusMd),
+          side: BorderSide(color: scheme.onSurface, width: 2),
+        ),
+      ),
+    );
+    return base;
+  }
 
   static ThemeData lightThemeFor(ThemePreset preset) {
     switch (preset) {

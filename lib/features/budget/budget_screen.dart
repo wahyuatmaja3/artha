@@ -5,6 +5,7 @@ import '../../data/repositories/budgets_repository.dart';
 import '../../data/repositories/categories_repository.dart';
 import '../../data/repositories/transactions_repository.dart';
 import '../../core/utils/formatters.dart';
+import '../../core/ui/neo_widgets.dart';
 import '../../domain/models/models.dart';
 
 class BudgetScreen extends ConsumerWidget {
@@ -198,9 +199,9 @@ class BudgetScreen extends ConsumerWidget {
               final progress = usedAmount / budget.limitAmount;
               final color = progress > 0.9 ? Colors.red : (progress > 0.7 ? Colors.orange : Colors.green);
 
-              return Card(
-                margin: const EdgeInsets.only(bottom: 16.0),
-                child: Padding(
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16.0),
+                child: NeoCard(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

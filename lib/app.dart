@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'core/ui/neo_widgets.dart';
 import '../../features/dashboard/dashboard_screen.dart';
 import '../../features/transactions/transactions_screen.dart';
 import '../../features/transactions/add_transaction_screen.dart';
@@ -37,21 +38,15 @@ class _AppShellState extends ConsumerState<AppShell> {
       body: _screens[_currentIndex],
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(24),
+        child: NeoCard(
+          padding: EdgeInsets.zero,
           child: NavigationBarTheme(
             data: NavigationBarThemeData(
               height: 68,
-              indicatorColor: scheme.primary.withValues(alpha: 0.16),
-              labelTextStyle: WidgetStateProperty.resolveWith((states) {
-                final isSelected = states.contains(WidgetState.selected);
-                return TextStyle(
-                  fontSize: 12,
-                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                );
-              }),
+              indicatorColor: scheme.primary.withValues(alpha: 0.22),
             ),
             child: NavigationBar(
+              backgroundColor: Colors.transparent,
               selectedIndex: _currentIndex,
               onDestinationSelected: (index) {
                 setState(() {

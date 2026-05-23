@@ -12,7 +12,12 @@ import '../../core/ui/neo_text_field.dart';
 import '../../core/utils/transaction_text_parser.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
-  const AddTransactionScreen({super.key});
+  final bool automaticMode;
+
+  const AddTransactionScreen({
+    super.key,
+    this.automaticMode = false,
+  });
 
   @override
   ConsumerState<AddTransactionScreen> createState() =>
@@ -31,8 +36,27 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   RecurringFrequency _recurringFrequency = RecurringFrequency.monthly;
   bool _recurringReminder = false;
   final _textParser = TransactionTextParser();
+  ParsedTransactionInput? _lastParsed;
   late final TextEditingController _noteController;
   late final TextEditingController _quickInputController;
+
+  static const Map<String, List<String>> _categoryKeywordHints = {
+    'Makan': ['makan', 'batagor', 'bakso', 'kopi', 'jajan', 'resto'],
+    'Bensin': ['bensin', 'bbm', 'pertalite', 'pertamax'],
+    'Listrik': ['listrik', 'token', 'pln'],
+    'Air': ['air', 'pdam'],
+    'Internet': ['internet', 'wifi', 'kuota', 'data'],
+    'Belanja Harian': ['belanja', 'sembako', 'minimarket'],
+    'Transportasi': ['transport', 'ojek', 'gojek', 'grab', 'tol', 'parkir'],
+    'Kesehatan': ['obat', 'dokter', 'klinik', 'rumah sakit'],
+    'Pendidikan': ['kursus', 'sekolah', 'buku', 'kuliah'],
+    'Hiburan': ['bioskop', 'game', 'hiburan', 'nonton'],
+    'Gaji': ['gaji', 'salary'],
+    'Bonus': ['bonus', 'thr'],
+    'Freelance': ['freelance', 'proyek'],
+    'Usaha': ['jualan', 'usaha', 'omzet'],
+    'Investasi': ['dividen', 'investasi', 'bunga'],
+  };
 
   @override
   void initState() {
@@ -57,18 +81,117 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
       return;
     }
 
+    final allCategories = ref.read(categoriesProvider).maybeWhen(
+          data: (items) => items,
+          orElse: () => <CategoryModel>[],
+        );
+    final categoryId = _autoSelectCategoryId(
+      categories: allCategories,
+      type: parsed.type,
+      note: parsed.note,
+    );
+
     setState(() {
       _type = parsed.type;
       _amountStr = parsed.amount.toInt().toString();
       _selectedDate = parsed.date;
       _note = parsed.note;
       _noteController.text = parsed.note;
-      _selectedCategoryId = null;
+      _selectedCategoryId = categoryId;
+      _lastParsed = parsed;
     });
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Input berhasil diparsing. Pilih kategori lalu simpan.')),
+      SnackBar(
+        content: Text(
+          categoryId == null
+              ? 'Input berhasil diparsing.'
+              : 'Input berhasil diparsing. Kategori otomatis terpilih.',
+        ),
+      ),
     );
+
+    _showParsedResultSheet();
+  }
+
+  void _showParsedResultSheet() {
+    if (_lastParsed == null) return;
+
+    final categories = ref.read(categoriesProvider).maybeWhen(
+          data: (items) => items,
+          orElse: () => <CategoryModel>[],
+        );
+    final selectedCategory = categories.where((c) => c.id == _selectedCategoryId).toList();
+    final categoryLabel = selectedCategory.isEmpty
+        ? '-'
+        : '${selectedCategory.first.icon} ${selectedCategory.first.name}';
+
+    showModalBottomSheet<void>(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Hasil Parsing', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 12),
+                Text('Tipe: ${_lastParsed!.type == 'expense' ? 'Pengeluaran' : 'Pemasukan'}'),
+                const SizedBox(height: 6),
+                Text('Nominal: ${NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0).format(_lastParsed!.amount)}'),
+                const SizedBox(height: 6),
+                Text('Catatan: ${_lastParsed!.note.isEmpty ? '-' : _lastParsed!.note}'),
+                const SizedBox(height: 6),
+                Text('Kategori: $categoryLabel'),
+                const SizedBox(height: 14),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Lanjutkan'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  String? _autoSelectCategoryId({
+    required List<CategoryModel> categories,
+    required String type,
+    required String note,
+  }) {
+    final byType = categories.where((c) => c.type == type).toList();
+    if (byType.isEmpty) return null;
+
+    final noteLower = note.toLowerCase();
+    for (final category in byType) {
+      final hints = _categoryKeywordHints[category.name] ?? const <String>[];
+      for (final hint in hints) {
+        if (noteLower.contains(hint)) {
+          return category.id;
+        }
+      }
+    }
+
+    for (final category in byType) {
+      if (noteLower.contains(category.name.toLowerCase())) {
+        return category.id;
+      }
+    }
+
+    final fallback = byType.where((c) => c.name.toLowerCase() == 'lainnya').toList();
+    if (fallback.isNotEmpty) return fallback.first.id;
+    return byType.first.id;
   }
 
   Future<void> _pickDate() async {
@@ -286,53 +409,62 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
           ),
         ),
         Expanded(
-          child: GridView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 4,
-              mainAxisSpacing: 16,
-              crossAxisSpacing: 16,
-              childAspectRatio: 0.8,
-            ),
-            itemCount: categories.length,
-            itemBuilder: (context, index) {
-              final category = categories[index];
-              final isSelected = category.id == _selectedCategoryId;
-              return GestureDetector(
-                onTap: () => setState(() => _selectedCategoryId = category.id),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    CircleAvatar(
-                      radius: 28,
-                      backgroundColor: isSelected
-                          ? Theme.of(context).colorScheme.primaryContainer
-                          : Theme.of(context).colorScheme.surfaceContainerHighest,
-                      child: Text(
-                        category.icon.isEmpty ? '?' : category.icon,
-                        style: const TextStyle(fontSize: 24),
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Text(
-                      category.name,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight:
-                            isSelected ? FontWeight.bold : FontWeight.normal,
-                        color: isSelected
-                            ? Theme.of(context).colorScheme.primary
-                            : null,
-                      ),
+          child: widget.automaticMode
+              ? Center(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      _selectedCategoryId == null
+                          ? 'Kategori akan dipilih otomatis setelah parsing input.'
+                          : 'Kategori dipilih otomatis. Kamu bisa lanjut simpan transaksi.',
                       textAlign: TextAlign.center,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
                     ),
-                  ],
+                  ),
+                )
+              : GridView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    mainAxisSpacing: 16,
+                    crossAxisSpacing: 16,
+                    childAspectRatio: 0.8,
+                  ),
+                  itemCount: categories.length,
+                  itemBuilder: (context, index) {
+                    final category = categories[index];
+                    final isSelected = category.id == _selectedCategoryId;
+                    return GestureDetector(
+                      onTap: () => setState(() => _selectedCategoryId = category.id),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          CircleAvatar(
+                            radius: 28,
+                            backgroundColor: isSelected
+                                ? Theme.of(context).colorScheme.primaryContainer
+                                : Theme.of(context).colorScheme.surfaceContainerHighest,
+                            child: Text(
+                              category.icon.isEmpty ? '?' : category.icon,
+                              style: const TextStyle(fontSize: 24),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            category.name,
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                              color: isSelected ? Theme.of(context).colorScheme.primary : null,
+                            ),
+                            textAlign: TextAlign.center,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
+                    );
+                  },
                 ),
-              );
-            },
-          ),
         ),
       ],
     );
@@ -409,43 +541,46 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
             ],
           ),
           const SizedBox(height: 10),
-          NeoTextFieldFrame(
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _quickInputController,
-                    minLines: 1,
-                    maxLines: 1,
-                    textInputAction: TextInputAction.done,
-                    onSubmitted: (_) => _applyQuickInput(),
-                    decoration: const InputDecoration(
-                      hintText: 'Input cepat: beli batagor 10000',
-                      isDense: true,
+          if (widget.automaticMode) ...[
+            NeoTextFieldFrame(
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _quickInputController,
+                      minLines: 1,
+                      maxLines: 1,
+                      textInputAction: TextInputAction.done,
+                      onSubmitted: (_) => _applyQuickInput(),
+                      decoration: const InputDecoration(
+                        hintText: 'Input otomatis: beli batagor 10000',
+                        isDense: true,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 8),
-                FilledButton(
-                  onPressed: _applyQuickInput,
-                  child: const Text('Parse'),
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 10),
-          NeoTextFieldFrame(
-            child: TextField(
-              controller: _noteController,
-              onChanged: (value) => _note = value,
-              minLines: 1,
-              maxLines: 1,
-              decoration: const InputDecoration(
-                hintText: 'Catatan (opsional)',
-                isDense: true,
+                  const SizedBox(width: 8),
+                  FilledButton(
+                    onPressed: _applyQuickInput,
+                    child: const Text('Parse'),
+                  ),
+                ],
               ),
             ),
-          ),
+            const SizedBox(height: 10),
+          ],
+          if (!widget.automaticMode)
+            NeoTextFieldFrame(
+              child: TextField(
+                controller: _noteController,
+                onChanged: (value) => _note = value,
+                minLines: 1,
+                maxLines: 1,
+                decoration: const InputDecoration(
+                  hintText: 'Catatan (opsional)',
+                  isDense: true,
+                ),
+              ),
+            ),
           if (_isRecurring) ...[
             const SizedBox(height: 12),
             Container(

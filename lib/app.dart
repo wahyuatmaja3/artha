@@ -29,6 +29,51 @@ class _AppShellState extends ConsumerState<AppShell> {
     const SettingsScreen(),
   ];
 
+  Future<void> _openAddTransactionChooser() async {
+    final choice = await showModalBottomSheet<String>(
+      context: context,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Tambah Transaksi', style: Theme.of(context).textTheme.titleLarge),
+                const SizedBox(height: 12),
+                ListTile(
+                  leading: const FaIcon(FontAwesomeIcons.keyboard),
+                  title: const Text('Input Manual'),
+                  subtitle: const Text('Isi kategori, nominal, dan catatan seperti biasa.'),
+                  onTap: () => Navigator.pop(context, 'manual'),
+                ),
+                ListTile(
+                  leading: const FaIcon(FontAwesomeIcons.wandMagicSparkles),
+                  title: const Text('Input Otomatis'),
+                  subtitle: const Text('Ketik seperti: beli batagor 10000.'),
+                  onTap: () => Navigator.pop(context, 'automatic'),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+
+    if (!mounted || choice == null) return;
+    final automaticMode = choice == 'automatic';
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => AddTransactionScreen(automaticMode: automaticMode),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
@@ -91,13 +136,7 @@ class _AppShellState extends ConsumerState<AppShell> {
       ),
       floatingActionButton: showAddTransactionFab
           ? FloatingActionButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const AddTransactionScreen(),
-                  ),
-                );
-              },
+              onPressed: _openAddTransactionChooser,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
               child: const FaIcon(FontAwesomeIcons.plus),
             )

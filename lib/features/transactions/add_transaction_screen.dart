@@ -9,6 +9,7 @@ import '../../data/repositories/categories_repository.dart';
 import '../../data/repositories/budgets_repository.dart';
 import '../../domain/models/models.dart';
 import '../../core/ui/neo_text_field.dart';
+import '../../core/utils/transaction_text_parser.dart';
 
 class AddTransactionScreen extends ConsumerStatefulWidget {
   const AddTransactionScreen({super.key});
@@ -29,18 +30,45 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   bool _isRecurring = false;
   RecurringFrequency _recurringFrequency = RecurringFrequency.monthly;
   bool _recurringReminder = false;
+  final _textParser = TransactionTextParser();
   late final TextEditingController _noteController;
+  late final TextEditingController _quickInputController;
 
   @override
   void initState() {
     super.initState();
     _noteController = TextEditingController(text: _note);
+    _quickInputController = TextEditingController();
   }
 
   @override
   void dispose() {
     _noteController.dispose();
+    _quickInputController.dispose();
     super.dispose();
+  }
+
+  void _applyQuickInput() {
+    final parsed = _textParser.parse(_quickInputController.text);
+    if (parsed == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Format tidak dikenali. Contoh: beli batagor 10000')),
+      );
+      return;
+    }
+
+    setState(() {
+      _type = parsed.type;
+      _amountStr = parsed.amount.toInt().toString();
+      _selectedDate = parsed.date;
+      _note = parsed.note;
+      _noteController.text = parsed.note;
+      _selectedCategoryId = null;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Input berhasil diparsing. Pilih kategori lalu simpan.')),
+    );
   }
 
   Future<void> _pickDate() async {
@@ -379,6 +407,31 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 onSelected: (v) => setState(() => _isRecurring = v),
               ),
             ],
+          ),
+          const SizedBox(height: 10),
+          NeoTextFieldFrame(
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _quickInputController,
+                    minLines: 1,
+                    maxLines: 1,
+                    textInputAction: TextInputAction.done,
+                    onSubmitted: (_) => _applyQuickInput(),
+                    decoration: const InputDecoration(
+                      hintText: 'Input cepat: beli batagor 10000',
+                      isDense: true,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                FilledButton(
+                  onPressed: _applyQuickInput,
+                  child: const Text('Parse'),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 10),
           NeoTextFieldFrame(

@@ -209,10 +209,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
                 const NeoSectionTitle('Recent Transactions'),
                 const SizedBox(height: 16),
                 _buildRecentTransactions(context, dashboardData.monthTransactions),
-                const SizedBox(height: 24),
-                const NeoSectionTitle('Shortcuts'),
-                const SizedBox(height: 12),
-                _buildShortcutCards(context),
               ],
             ),
           );

@@ -274,7 +274,9 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
   Future<void> _submit() async {
     if (_selectedWalletId == null || _selectedCategoryId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Pilih wallet dan kategori')),
+        SnackBar(
+          content: Text(widget.automaticMode ? 'Parse input dulu lalu pilih wallet.' : 'Pilih wallet dan kategori'),
+        ),
       );
       return;
     }
@@ -745,7 +747,7 @@ class _AddTransactionScreenState extends ConsumerState<AddTransactionScreen> {
                 error: (e, _) => Center(child: Text('Error: $e')),
               ),
             ),
-            if (_selectedCategoryId != null)
+            if (widget.automaticMode || _selectedCategoryId != null)
               walletsAsync.when(
                 data: (wallets) => _buildBottomScreen(wallets),
                 loading: () => const Center(child: CircularProgressIndicator()),

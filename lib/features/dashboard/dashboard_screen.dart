@@ -621,49 +621,6 @@ class _DashboardScreenState extends ConsumerState<DashboardScreen> {
     );
   }
 
-  Widget _buildShortcutCards(BuildContext context) {
-    return Column(
-      children: [
-        _buildShortcutTile(
-          context,
-          icon: FontAwesomeIcons.bullseye,
-          label: 'Goals',
-          onTap: () => AppShellController.of(context).goToTab(2),
-        ),
-        const SizedBox(height: 8),
-        _buildShortcutTile(
-          context,
-          icon: FontAwesomeIcons.chartLine,
-          label: 'Invest',
-          onTap: () => AppShellController.of(context).goToTab(3),
-        ),
-        const SizedBox(height: 8),
-        _buildShortcutTile(
-          context,
-          icon: FontAwesomeIcons.chartPie,
-          label: 'Budget',
-          onTap: () => AppShellController.of(context).goToTab(4),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildShortcutTile(
-    BuildContext context, {
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return NeoCard(
-      padding: EdgeInsets.zero,
-      child: ListTile(
-        leading: FaIcon(icon),
-        title: Text(label),
-        trailing: const Icon(Icons.chevron_right),
-        onTap: onTap,
-      ),
-    );
-  }
 }
 
 class _LegendDot extends StatelessWidget {

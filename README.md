@@ -1,66 +1,60 @@
----
-
 # #️⃣ Artha — Personal Finance Tracker
 
-**Artha** adalah aplikasi manajemen keuangan harian berbasis Flutter yang menggabungkan fungsionalitas pencatatan cepat dengan estetika **Neo-Brutalism Minimal**. Didesain dengan garis tepi tebal (*high-contrast borders*), warna kontras yang berani, dan tipografi yang kuat untuk memberikan pengalaman pengguna yang unik dan responsif.
+**Artha** adalah aplikasi manajemen keuangan harian berbasis Flutter yang menggabungkan fungsionalitas pencatatan instan dengan estetika **Neo-Brutalism Minimal**. Didesain dengan garis tepi tebal (*high-contrast borders*), warna kontras yang berani, dan tipografi yang kuat, Artha menawarkan pengalaman pengelolaan finansial yang unik, ekspresif, dan tetap responsif.
 
 ---
 
 ## 🚀 Fitur Utama
 
 ### 📊 1. Dashboard & Analisis Kontemporer
-
-* **Ringkasan Cepat:** Pantau saldo bersih, total pemasukan, dan pengeluaran bulan berjalan langsung di halaman utama.
-* **Recent Transactions:** Akses cepat ke riwayat transaksi terakhir.
-* **Visualisasi fl_chart:** Grafik lingkaran (*pie chart*) interaktif untuk memetakan distribusi pengeluaran per kategori.
+* **Ringkasan Finansial:** Pantau saldo bersih, total pemasukan, dan pengeluaran bulan berjalan secara real-time di halaman utama.
+* **Riwayat Transaksi:** Akses cepat ke daftar transaksi terbaru untuk monitoring yang lebih mudah.
+* **Visualisasi Interaktif:** Grafik lingkaran (*pie chart*) dinamis berbasis `fl_chart` untuk memetakan distribusi pengeluaran per kategori.
 
 ### 🔍 2. Manajemen Transaksi Tingkat Lanjut
-
-* **Multi-Filter & Pencarian:** Filter data secara instan berdasarkan periode (bulan/tahun), kategori spesifik, maupun tipe transaksi (*Income/Expense*).
-* **Metrik Finansial:** Kalkulasi otomatis untuk *Total Income*, *Total Expense*, dan *Net Balance*.
-* **Smart Recurring:** Dukungan pencatatan otomatis untuk transaksi yang berulang secara berkala.
+* **Pencarian & Multi-Filter:** Filter data secara instan berdasarkan periode (bulan/tahun), kategori spesifik, maupun tipe transaksi (*Income/Expense*).
+* **Metrik Otomatis:** Kalkulasi akurat untuk akun *Total Income*, *Total Expense*, dan *Net Balance*.
+* **Smart Recurring:** Dukungan pencatatan otomatis untuk transaksi rutin yang berulang secara berkala.
 
 ### 🎯 3. Alokasi Dana & Perencanaan
-
-* **Smart Budgeting:** Tetapkan batas pengeluaran bulanan per kategori dilengkapi dengan indikator progres pemakaian visual.
-* **Savings Goals:** Celengan digital untuk melacak target tabungan, kalkulasi sisa dana, dan estimasi waktu pencapaian.
-* **Investment Plans:** Pantau portofolio investasi sederhana, catat kontribusi (top-up/tarik), serta estimasi pertumbuhan aset.
+* **Smart Budgeting:** Tetapkan batasan pengeluaran bulanan per kategori yang dilengkapi dengan indikator visual progres pemakaian.
+* **Savings Goals:** Celengan digital untuk melacak target tabungan, lengkap dengan kalkulasi sisa dana dan estimasi waktu pencapaian.
+* **Investment Plans:** Pantau portofolio investasi sederhana, catat kontribusi (top-up/penarikan), serta estimasi pertumbuhan aset.
 
 ### ⚙️ 4. Personalisasi & Pengaturan
-
-* **Theme Presets:** Pilihan tema warna khas neo-brutalism serta dukungan penuh untuk *Dark Mode*.
-* **Wallet Manager:** Kelola banyak sumber dana (Cash, Rekening Bank, E-Wallet) dalam satu tempat.
-* **Kategori Kustom:** Tambah, ubah, atau hapus kategori sesuai dengan pola pengeluaran Anda.
+* **Theme Presets:** Pilihan tema warna khas Neo-Brutalism dengan dukungan penuh untuk mode gelap (*Dark Mode*).
+* **Wallet Manager:** Kelola banyak sumber dana (Tunai, Rekening Bank, E-Wallet) dalam satu dasbor terintegrasi.
+* **Kategori Kustom:** Kebebasan untuk menambah, mengubah, atau menghapus kategori sesuai dengan pola pengeluaran Anda.
 
 ---
 
 ## 🛠️ Tech Stack & Arsitektur
 
-Aplikasi ini dibangun menggunakan pola arsitektur yang modular, bersih (*clean architecture principles*), dan mengutamakan performa lokal yang solid.
+Aplikasi ini dibangun menggunakan arsitektur modular yang bersih (*Clean Architecture principles*) untuk memastikan kode mudah dirawat, diuji, dan memiliki performa lokal yang solid.
 
 | Komponen | Teknologi | Deskripsi / Kegunaan |
 | --- | --- | --- |
-| **Framework** | **Flutter (Material 3)** | Pembuatan UI/UX lintas platform yang responsif dengan adaptasi kustom gaya Neo-Brutalism. |
+| **Framework** | **Flutter (Material 3)** | Pengembangan UI/UX lintas platform dengan adaptasi kustom gaya Neo-Brutalism. |
 | **State Management** | **Riverpod** | Manajemen *state* yang aman (*reactive & type-safe*), mempermudah pengujian dan *caching* data. |
-| **Local Database** | **Drift (SQLite)** | ORM reaktif untuk penyimpanan data lokal yang cepat, mendukung *stream* langsung ke UI. |
-| **Data Visualization** | **fl_chart** | Library grafik performa tinggi untuk representasi data keuangan yang interaktif. |
-| **Utilities** | `intl`, `uuid`, `path_provider`, `connectivity_plus` | Internasionalisasi mata uang/tanggal, generator ID unik, manajemen file lokal, dan deteksi status jaringan. |
+| **Local Database** | **Drift (SQLite)** | ORM reaktif untuk penyimpanan data lokal yang cepat dan mendukung *stream* langsung ke UI. |
+| **Data Visualization** | **fl_chart** | Library grafik performa tinggi untuk representasi visual data keuangan. |
+| **Utilities** | `intl`, `uuid`, `path_provider`, `connectivity_plus` | Internasionalisasi (mata uang/tanggal), generator ID unik, manajemen file lokal, dan deteksi status jaringan. |
 | **Icons** | **Font Awesome Flutter** | Library ikon yang kaya untuk representasi visual kategori keuangan. |
 
 ---
 
-## 📦 Struktur Proyek (Arsitektur Relevan)
+## 📦 Struktur Proyek
 
 ```text
 lib/
 ├── core/                  # Utilitas global, tema neo-brutalism, & konfigurasi database
-│   ├── theme/             # Preset warna kontras tinggi, border style, dan font
+│   ├── theme/             # Preset warna kontras tinggi, border style, dan tipografi
 │   └── utils/             # Formatter mata uang dan helper tanggal
-├── data/                  # Sumber data (Drift DB DAOs, Tables definition)
+├── data/                  # Sumber data (Drift DB DAOs & Table Definitions)
 ├── providers/             # State notifier global untuk sinkronisasi data keuangan
-└── features/              # Fitur modular aplikasi
-    ├── dashboard/         # UI & Logic halaman ringkasan
-    ├── transactions/      # Fitur catat, edit, dan filter transaksi
+└── features/              # Fitur modular aplikasi berbasis komponen
+    ├── dashboard/         # UI & Logika halaman ringkasan
+    ├── transactions/      # Fitur pencatatan, penyuntingan, dan filtrasi transaksi
     ├── budgeting/         # Fitur limitasi alokasi dana per kategori
     └── savings_invest/    # Fitur target tabungan dan rencana investasi
 
@@ -81,35 +75,34 @@ Ikuti langkah-langkah berikut untuk menjalankan proyek Artha di lingkungan lokal
 ### Langkah Instalasi
 
 1. **Clone Repositori**
+
 ```bash
-git clone https://github.com/wahyuatmaja3/artha.git
-cd artha
+   git clone [https://github.com/wahyuatmaja3/artha.git](https://github.com/wahyuatmaja3/artha.git)
+   cd artha
 
 ```
-
 
 2. **Instal Dependensi**
+
 ```bash
-flutter pub get
+   flutter pub get
 
 ```
-
 
 3. **Generate Kode Database (Drift)**
-Karena proyek ini menggunakan Drift ORM, jalankan `build_runner` untuk menghasilkan kode generator database:
+Proyek ini menggunakan Drift ORM, jalankan `build_runner` untuk menghasilkan kode generator database:
+
 ```bash
-flutter pub run build_runner build --delete-conflicting-outputs
+   dart run build_runner build --delete-conflicting-outputs
 
 ```
-
 
 4. **Jalankan Aplikasi**
+
 ```bash
-flutter run
+   flutter run
 
 ```
-
-
 
 ---
 
@@ -121,4 +114,6 @@ Proyek ini dilisensikan di bawah **MIT License** - lihat file [LICENSE](https://
 
 *Dibuat dengan 💻 dan kebebasan berekspresi Neo-Brutalism oleh [Wahyu Tri](https://www.google.com/search?q=https://github.com/wahyuatmaja3).*
 
---
+```
+
+---
